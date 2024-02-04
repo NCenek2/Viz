@@ -122,7 +122,7 @@ const Header = () => {
   return (
     <nav className="navbar navbar-dark header-color sticky-top">
       <div className="container-fluid">
-        <Link className="navbar-brand" to="/home">
+        <Link className="navbar-brand" to="/">
           Viz
         </Link>
         <button
@@ -159,7 +159,7 @@ const Header = () => {
                   <Link
                     className="nav-link white-smoke"
                     aria-current="page"
-                    to="/home"
+                    to="/"
                   >
                     Home
                   </Link>

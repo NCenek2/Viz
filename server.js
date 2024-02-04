@@ -41,10 +41,6 @@ app.use(cookieParser());
 
 app.use(cors(corsOptions));
 
-app.get("/", (req, res) => {
-  return res.redirect("/home");
-});
-
 require("./routes/auth")(pool, app);
 require("./routes/register")(pool, app);
 require("./routes/refresh")(app);
