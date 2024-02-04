@@ -32,6 +32,10 @@ app.use(cookieParser());
 
 app.use(cors(corsOptions));
 
+app.get("/", (req, res) => {
+  return res.sendStatus(200);
+});
+
 require("./routes/auth")(pool, app);
 require("./routes/register")(pool, app);
 require("./routes/refresh")(app);
