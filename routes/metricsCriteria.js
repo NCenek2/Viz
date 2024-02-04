@@ -1,8 +1,10 @@
 const Api400Error = require("../errors/Api400Error");
 const logger = require("../logs/logger");
+const hasToken = require("../middlewares/hasToken");
 
 module.exports = (pool, app) => {
   const BASE_URL = "/api/metrics_criteria";
+  app.use(hasToken);
   pool.connect();
 
   app.get(`${BASE_URL}/rankings/:cycle_id`, async (req, res, next) => {

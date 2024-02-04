@@ -1,9 +1,11 @@
 const Api400Error = require("../errors/Api400Error");
 const Api409Error = require("../errors/Api409Error");
+const hasToken = require("../middlewares/hasToken");
 const logger = require("../logs/logger");
 
 module.exports = (pool, app) => {
   const BASE_URL = "/api/cycles";
+  app.use(hasToken);
   pool.connect();
 
   // READ All Cycles

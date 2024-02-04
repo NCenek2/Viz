@@ -50,7 +50,7 @@ require("./routes/register")(pool, app);
 require("./routes/refresh")(app);
 require("./routes/logout")(pool, app);
 
-app.use(hasToken);
+// Requires Token
 require("./routes/metrics")(pool, app);
 require("./routes/metricsCriteria")(pool, app);
 require("./routes/currentCycle")(pool, app);

@@ -1,9 +1,11 @@
 const Api400Error = require("../errors/Api400Error");
 const metrics = require("./metrics");
 const logger = require("../logs/logger");
+const hasToken = require("../middlewares/hasToken");
 
 module.exports = (pool, app) => {
   const BASE_URL = "/api/metric";
+  app.use(hasToken);
   pool.connect();
 
   app.get(BASE_URL, async (req, res, next) => {

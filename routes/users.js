@@ -1,9 +1,11 @@
 const Api400Error = require("../errors/Api400Error");
 const isAuthorized = require("../middlewares/isAuthorized");
+const hasToken = require("../middlewares/hasToken");
 const logger = require("../logs/logger");
 
 module.exports = (pool, app) => {
   const BASE_URL = "/api/users";
+  app.use(hasToken);
   pool.connect();
 
   // READ ALL Users
