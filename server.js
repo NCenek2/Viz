@@ -9,14 +9,23 @@ const httpStatusCodes = require("./errors/HttpCodes");
 require("dotenv").config();
 
 const app = express();
-
-const pool = new Pool({
-  user: keys.POSTGRES_USER,
-  host: keys.POSTGRES_HOST,
-  database: keys.POSTGRES_DATABASE,
-  password: keys.POSTGRES_PASSWORD,
-  port: keys.POSTGRES_PORT,
-});
+let pool = null;
+if (process.env.NODE_ENV === "production") {
+  pool = new Pool({
+    connectionString: process.env.DATABASE_URL,
+    ssl: {
+      rejectUnauthorized: false,
+    },
+  });
+} else {
+  pool = new Pool({
+    user: keys.POSTGRES_USER,
+    host: keys.POSTGRES_HOST,
+    database: keys.POSTGRES_DATABASE,
+    password: keys.POSTGRES_PASSWORD,
+    port: keys.POSTGRES_PORT,
+  });
+}
 
 const corsOptions = {
   origin: allowedOrigins,

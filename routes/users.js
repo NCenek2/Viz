@@ -1,6 +1,5 @@
 const Api400Error = require("../errors/Api400Error");
 const isAuthorized = require("../middlewares/isAuthorized");
-require("dotenv").config();
 const logger = require("../logs/logger");
 
 module.exports = (pool, app) => {

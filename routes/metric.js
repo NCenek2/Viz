@@ -1,6 +1,5 @@
 const Api400Error = require("../errors/Api400Error");
 const metrics = require("./metrics");
-require("dotenv").config();
 const logger = require("../logs/logger");
 
 module.exports = (pool, app) => {

@@ -10,7 +10,6 @@ const {
   REFRESH_TOKEN_EXPIRES_IN_SECONDS,
   HTTP_ONLY_COOKIE_EXPIRES_IN_SECONDS,
 } = require("../constants/constants");
-require("dotenv").config();
 
 module.exports = (pool, app) => {
   const BASE_URL = "/api/auth";

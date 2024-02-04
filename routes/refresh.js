@@ -4,7 +4,6 @@ const createToken = require("../miscellaneous/createToken");
 const keys = require("../config/keys");
 const logger = require("../logs/logger");
 const { ACCESS_TOKEN_EXPIRES_IN_SECONDS } = require("../constants/constants");
-require("dotenv").config();
 
 module.exports = (app) => {
   app.get("/api/refresh", (req, res, next) => {

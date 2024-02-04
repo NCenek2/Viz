@@ -1,5 +1,4 @@
 const hasToken = require("../middlewares/hasToken");
-require("dotenv").config();
 const logger = require("../logs/logger");
 
 module.exports = (pool, app) => {
