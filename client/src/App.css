@@ -1,0 +1,69 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+h2,
+h3,
+h5,
+p {
+  padding: 0;
+  margin: 0;
+}
+
+:root {
+  --background-hue: 240;
+  --background-saturation: 58%;
+  --percentage: 250px;
+
+  --top-color: hsl(var(--background-hue), var(--background-saturation), 25%);
+  --sidebar-color: hsl(var(--background-hue), 38%, 9%);
+  --header-color: hsl(var(--background-hue), var(--background-saturation), 24%);
+  --middle-color: hsl(var(--background-hue), var(--background-saturation), 20%);
+  --lower-color: hsl(var(--background-hue), var(--background-saturation), 8%);
+}
+
+body {
+  min-height: 100vh;
+  width: 100%;
+  background: linear-gradient(
+    to bottom,
+    var(--top-color) 0%,
+    var(--middle-color) 35%,
+    var(--lower-color) 70%
+  );
+  position: relative;
+}
+
+.header-color {
+  background: var(--header-color);
+}
+
+.sidebar-color {
+  background: var(--sidebar-color);
+}
+
+.offcanvas-title {
+  color: white;
+}
+.white-smoke {
+  color: hsl(0, 0%, 96%);
+}
+
+.nav-link:hover {
+  color: hsl(0, 0%, 50%);
+}
+
+.navbar-brand {
+  font-family: cursive;
+}
+
+.btn.btn-ddark {
+  color: whitesmoke;
+  background-color: hsl(240, 50%, 55%);
+}
+
+.btn.btn-ddark:hover {
+  background-color: hsl(240, 50%, 65%);
+}
