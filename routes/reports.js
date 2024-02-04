@@ -4,11 +4,10 @@ const hasToken = require("../middlewares/hasToken");
 
 module.exports = (pool, app) => {
   const BASE_URL = "/api/reports";
-  app.use(hasToken);
   pool.connect();
 
   //   Get Report By Id
-  app.get(BASE_URL, async (req, res, next) => {
+  app.get(BASE_URL, hasToken, async (req, res, next) => {
     let { cycle_id, user_id } = req.query;
     if (!cycle_id || !user_id)
       return next(new Api400Error("Cycle id or user id is null"));
@@ -34,7 +33,7 @@ module.exports = (pool, app) => {
   });
 
   // User Reports
-  app.get(`${BASE_URL}/user/:user_id`, async (req, res, next) => {
+  app.get(`${BASE_URL}/user/:user_id`, hasToken, async (req, res, next) => {
     let { user_id } = req.params;
     if (!user_id) return next(new Api400Error("User id is null"));
 
@@ -62,7 +61,7 @@ module.exports = (pool, app) => {
   });
 
   // CREATE Report
-  app.post(BASE_URL, async (req, res, next) => {
+  app.post(BASE_URL, hasToken, async (req, res, next) => {
     let { report, cycle_id, user_id } = req.body;
 
     if (!report || !cycle_id || !user_id)
@@ -87,7 +86,7 @@ module.exports = (pool, app) => {
   });
 
   // Acknowledge Report
-  app.patch(`${BASE_URL}/acknowledge`, async (req, res, next) => {
+  app.patch(`${BASE_URL}/acknowledge`, hasToken, async (req, res, next) => {
     let { user_id: userId } = req;
     let { report_id, user_id } = req.body;
 
@@ -118,7 +117,7 @@ module.exports = (pool, app) => {
   });
 
   // UPDATE Report with Id
-  app.patch(`${BASE_URL}/:report_id`, async (req, res, next) => {
+  app.patch(`${BASE_URL}/:report_id`, hasToken, async (req, res, next) => {
     let { report_id } = req.params;
     const { report } = req.body;
 
@@ -140,7 +139,7 @@ module.exports = (pool, app) => {
     }
   });
 
-  app.delete(`${BASE_URL}/:report_id`, async (req, res, next) => {
+  app.delete(`${BASE_URL}/:report_id`, hasToken, async (req, res, next) => {
     let { report_id } = req.params;
     if (!report_id) return next(new Api400Error("Report id cannot be null"));
 

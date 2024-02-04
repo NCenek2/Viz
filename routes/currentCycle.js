@@ -6,11 +6,10 @@ const logger = require("../logs/logger");
 
 module.exports = (pool, app) => {
   const BASE_URL = "/api/current_cycle";
-  app.use(hasToken);
   pool.connect();
 
   // READ Current Cycle
-  app.get(BASE_URL, async (req, res, next) => {
+  app.get(BASE_URL, hasToken, async (req, res, next) => {
     // const query = "SELECT * from current_cycle";
 
     let query = `SELECT
@@ -37,7 +36,7 @@ JOIN
 
   // Get Count
   // READ Current Cycle
-  app.get(`${BASE_URL}/count`, async (req, res, next) => {
+  app.get(`${BASE_URL}/count`, hasToken, async (req, res, next) => {
     // const query = "SELECT * from current_cycle";
 
     try {
@@ -61,7 +60,7 @@ JOIN
   });
 
   // UPDATE Current Cycle
-  app.patch(`${BASE_URL}/:cycle_id`, async (req, res, next) => {
+  app.patch(`${BASE_URL}/:cycle_id`, hasToken, async (req, res, next) => {
     let { cycle_id } = req.params;
     if (!cycle_id) return next(new Api400Error("Cycle id cannot be null"));
 

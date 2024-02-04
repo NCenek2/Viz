@@ -4,18 +4,21 @@ const hasToken = require("../middlewares/hasToken");
 
 module.exports = (pool, app) => {
   const BASE_URL = "/api/metrics_criteria";
-  app.use(hasToken);
   pool.connect();
 
-  app.get(`${BASE_URL}/rankings/:cycle_id`, async (req, res, next) => {
-    let { cycle_id } = req.params;
-    if (!cycle_id) return next(new Api400Error("Cycle id cannot be null"));
+  app.get(
+    `${BASE_URL}/rankings/:cycle_id`,
+    hasToken,
+    async (req, res, next) => {
+      let { cycle_id } = req.params;
+      if (!cycle_id) return next(new Api400Error("Cycle id cannot be null"));
 
-    cycle_id = parseInt(cycle_id);
-    if (!cycle_id) return next(new Api400Error("Cycle id must be an integer"));
+      cycle_id = parseInt(cycle_id);
+      if (!cycle_id)
+        return next(new Api400Error("Cycle id must be an integer"));
 
-    // got rid of     um.cycle_id, um.user_id,
-    let query = `SELECT
+      // got rid of     um.cycle_id, um.user_id,
+      let query = `SELECT
     u.email,
     um.metric_value,
     mc.weight,
@@ -27,26 +30,31 @@ JOIN
 JOIN
     users u ON um.user_id = u.user_id`;
 
-    query += " WHERE um.cycle_id = $1";
+      query += " WHERE um.cycle_id = $1";
 
-    try {
-      const result = await pool.query(query, [cycle_id]);
-      logger.info("Successfully gathered ranking data!");
-      return res.json(result.rows);
-    } catch (err) {
-      logger.error(err?.message ?? "Failed to gather ranking data");
-      return next(err);
+      try {
+        const result = await pool.query(query, [cycle_id]);
+        logger.info("Successfully gathered ranking data!");
+        return res.json(result.rows);
+      } catch (err) {
+        logger.error(err?.message ?? "Failed to gather ranking data");
+        return next(err);
+      }
     }
-  });
+  );
 
-  app.get(`${BASE_URL}/cycle_users/:cycle_id`, async (req, res, next) => {
-    let { cycle_id } = req.params;
-    if (!cycle_id) return next(new Api400Error("Cycle id cannot be null"));
+  app.get(
+    `${BASE_URL}/cycle_users/:cycle_id`,
+    hasToken,
+    async (req, res, next) => {
+      let { cycle_id } = req.params;
+      if (!cycle_id) return next(new Api400Error("Cycle id cannot be null"));
 
-    cycle_id = parseInt(cycle_id);
-    if (!cycle_id) return next(new Api400Error("Cycle id must be an integer"));
+      cycle_id = parseInt(cycle_id);
+      if (!cycle_id)
+        return next(new Api400Error("Cycle id must be an integer"));
 
-    let query = `SELECT DISTINCT
+      let query = `SELECT DISTINCT
     um.user_id,
     u.email
 FROM
@@ -56,22 +64,23 @@ JOIN
 JOIN
   cycles c ON um.cycle_id = c.cycle_id`;
 
-    query += " WHERE um.cycle_id = $1";
+      query += " WHERE um.cycle_id = $1";
 
-    try {
-      const result = await pool.query(query, [cycle_id]);
-      logger.info("Successfully gathered users in a specified cycle");
-      return res.json(result.rows);
-    } catch (err) {
-      logger.error(
-        err?.message ?? "Failed to gather users in a specified cycle"
-      );
-      return next(err);
+      try {
+        const result = await pool.query(query, [cycle_id]);
+        logger.info("Successfully gathered users in a specified cycle");
+        return res.json(result.rows);
+      } catch (err) {
+        logger.error(
+          err?.message ?? "Failed to gather users in a specified cycle"
+        );
+        return next(err);
+      }
     }
-  });
+  );
 
   // READ All Criteria
-  app.get(BASE_URL, async (req, res, next) => {
+  app.get(BASE_URL, hasToken, async (req, res, next) => {
     const query = `SELECT * FROM metrics_criteria`;
     try {
       const result = await pool.query(query);
@@ -84,7 +93,7 @@ JOIN
   });
 
   // CREATE Metrics Criteria
-  app.post(BASE_URL, async (req, res, next) => {
+  app.post(BASE_URL, hasToken, async (req, res, next) => {
     let { metrics_id, weight, threshold } = req.body;
 
     if (!metrics_id || !weight || !threshold)
@@ -115,7 +124,7 @@ JOIN
   });
 
   // CREATE Metrics Criteria For Cycle
-  app.post(`${BASE_URL}/createcycle`, async (req, res, next) => {
+  app.post(`${BASE_URL}/createcycle`, hasToken, async (req, res, next) => {
     const { criteria } = req.body;
 
     if (!criteria || !criteria.length)

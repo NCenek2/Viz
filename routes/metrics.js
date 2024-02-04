@@ -5,11 +5,10 @@ const hasToken = require("../middlewares/hasToken");
 
 module.exports = (pool, app) => {
   const BASE_URL = "/api/metrics";
-  app.use(hasToken);
   pool.connect();
 
   // READ All Metric
-  app.get(BASE_URL, async (req, res, next) => {
+  app.get(BASE_URL, hasToken, async (req, res, next) => {
     const query = `SELECT * FROM metrics`;
 
     try {
@@ -23,7 +22,7 @@ module.exports = (pool, app) => {
   });
 
   // READ Metric By Id
-  app.get(`${BASE_URL}/:metrics_id`, async (req, res, next) => {
+  app.get(`${BASE_URL}/:metrics_id`, hasToken, async (req, res, next) => {
     let { metrics_id } = req.params;
     if (!metrics_id)
       return next(new Api400Error("Metrics id cannot be null in parameters"));
@@ -45,7 +44,7 @@ module.exports = (pool, app) => {
   });
 
   // CREATE Metrics
-  app.post(BASE_URL, async (req, res, next) => {
+  app.post(BASE_URL, hasToken, async (req, res, next) => {
     const { metrics_name, metrics_unit } = req.body;
     if (!metrics_name || !metrics_unit)
       return next(new Api400Error("Metrics name or metrics unit is null"));
@@ -67,7 +66,7 @@ module.exports = (pool, app) => {
   });
 
   // UPDATE Metrics
-  app.patch(BASE_URL, async (req, res, next) => {
+  app.patch(BASE_URL, hasToken, async (req, res, next) => {
     const { metrics_name, metrics_unit } = req.body;
     let { metrics_id } = req.body;
     if (!metrics_id || !metrics_name || !metrics_unit)

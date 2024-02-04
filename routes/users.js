@@ -5,11 +5,10 @@ const logger = require("../logs/logger");
 
 module.exports = (pool, app) => {
   const BASE_URL = "/api/users";
-  app.use(hasToken);
   pool.connect();
 
   // READ ALL Users
-  app.get(BASE_URL, isAuthorized(2), async (req, res, next) => {
+  app.get(BASE_URL, hasToken, isAuthorized(2), async (req, res, next) => {
     const query = "SELECT * from users";
 
     try {
@@ -23,7 +22,7 @@ module.exports = (pool, app) => {
   });
 
   // Read Dashboard Users
-  app.get(`${BASE_URL}/dashboard`, async (req, res, next) => {
+  app.get(`${BASE_URL}/dashboard`, hasToken, async (req, res, next) => {
     const { role, user_id } = req;
 
     const queryData = [];
@@ -48,23 +47,28 @@ module.exports = (pool, app) => {
   });
 
   // Read Access Users
-  app.get(`${BASE_URL}/access`, isAuthorized(2), async (req, res, next) => {
-    const query = `SELECT user_id, email, role FROM users`;
+  app.get(
+    `${BASE_URL}/access`,
+    hasToken,
+    isAuthorized(2),
+    async (req, res, next) => {
+      const query = `SELECT user_id, email, role FROM users`;
 
-    try {
-      const result = await pool.query(query);
-      logger.info("Request to read all access users sucessful!");
-      return res.json(result.rows);
-    } catch (err) {
-      logger.error(
-        err?.message ?? "Error when attempting to read access users"
-      );
-      return next(err);
+      try {
+        const result = await pool.query(query);
+        logger.info("Request to read all access users sucessful!");
+        return res.json(result.rows);
+      } catch (err) {
+        logger.error(
+          err?.message ?? "Error when attempting to read access users"
+        );
+        return next(err);
+      }
     }
-  });
+  );
 
   // READ User By Id
-  app.get(`${BASE_URL}/:user_id`, async (req, res, next) => {
+  app.get(`${BASE_URL}/:user_id`, hasToken, async (req, res, next) => {
     let { user_id } = req.params;
     if (!user_id) return next(new Api400Error("User id cannot be null"));
 
@@ -84,25 +88,32 @@ module.exports = (pool, app) => {
   });
 
   // UPDATE User Role
-  app.patch(`${BASE_URL}/access`, isAuthorized(2), async (req, res, next) => {
-    const { user_id, role } = req.body;
-    if (!user_id || !role)
-      return next(new Api400Error("User Id or role is empty"));
+  app.patch(
+    `${BASE_URL}/access`,
+    hasToken,
+    isAuthorized(2),
+    async (req, res, next) => {
+      const { user_id, role } = req.body;
+      if (!user_id || !role)
+        return next(new Api400Error("User Id or role is empty"));
 
-    const query = "UPDATE users SET role = $1 WHERE user_id = $2";
+      const query = "UPDATE users SET role = $1 WHERE user_id = $2";
 
-    try {
-      await pool.query(query, [role, user_id]);
-      logger.info("Changed user role successfully");
-      return res.sendStatus(204);
-    } catch (err) {
-      logger.error(err?.message ?? "Error when attempting to update user role");
-      return next(err);
+      try {
+        await pool.query(query, [role, user_id]);
+        logger.info("Changed user role successfully");
+        return res.sendStatus(204);
+      } catch (err) {
+        logger.error(
+          err?.message ?? "Error when attempting to update user role"
+        );
+        return next(err);
+      }
     }
-  });
+  );
 
   // UPDATE Username, haveToCheck role for role part, but username is fine
-  app.patch(`${BASE_URL}/:user_id`, async (req, res, next) => {
+  app.patch(`${BASE_URL}/:user_id`, hasToken, async (req, res, next) => {
     const { username } = req.body;
     let { user_id } = req.params;
 

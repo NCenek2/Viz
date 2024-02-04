@@ -1,14 +1,12 @@
 const Api400Error = require("../errors/Api400Error");
-const metrics = require("./metrics");
 const logger = require("../logs/logger");
 const hasToken = require("../middlewares/hasToken");
 
 module.exports = (pool, app) => {
   const BASE_URL = "/api/metric";
-  app.use(hasToken);
   pool.connect();
 
-  app.get(BASE_URL, async (req, res, next) => {
+  app.get(BASE_URL, hasToken, async (req, res, next) => {
     let { cycle_id, user_id } = req.query;
     if (!cycle_id || !user_id)
       return next(new Api400Error("Cycle id and user id cannot be null"));
@@ -50,14 +48,17 @@ module.exports = (pool, app) => {
     }
   });
 
-  app.get(`${BASE_URL}/user_cycles/:user_id`, async (req, res, next) => {
-    let { user_id } = req.params;
-    if (!user_id) return next(new Api400Error("User id cannot be null"));
+  app.get(
+    `${BASE_URL}/user_cycles/:user_id`,
+    hasToken,
+    async (req, res, next) => {
+      let { user_id } = req.params;
+      if (!user_id) return next(new Api400Error("User id cannot be null"));
 
-    user_id = parseInt(user_id);
-    if (!user_id) return next(new Api400Error("User id must be an integer"));
+      user_id = parseInt(user_id);
+      if (!user_id) return next(new Api400Error("User id must be an integer"));
 
-    let query = `SELECT DISTINCT
+      let query = `SELECT DISTINCT
     um.cycle_id,
     c.start_date
 FROM
@@ -67,26 +68,31 @@ JOIN
 JOIN
     cycles c ON um.cycle_id = c.cycle_id`;
 
-    query += " WHERE um.user_id = $1";
+      query += " WHERE um.user_id = $1";
 
-    try {
-      const result = await pool.query(query, [user_id]);
-      logger.info("Successfully retrieved user cycles!");
-      return res.json(result.rows);
-    } catch (err) {
-      logger.error(err?.message ?? "Failed to retrieve user cycles");
-      return next(err);
+      try {
+        const result = await pool.query(query, [user_id]);
+        logger.info("Successfully retrieved user cycles!");
+        return res.json(result.rows);
+      } catch (err) {
+        logger.error(err?.message ?? "Failed to retrieve user cycles");
+        return next(err);
+      }
     }
-  });
+  );
 
-  app.get(`${BASE_URL}/cycle_users/:cycle_id`, async (req, res, next) => {
-    let { cycle_id } = req.params;
-    if (!cycle_id) return next(new Api400Error("Cycle id cannot be null"));
+  app.get(
+    `${BASE_URL}/cycle_users/:cycle_id`,
+    hasToken,
+    async (req, res, next) => {
+      let { cycle_id } = req.params;
+      if (!cycle_id) return next(new Api400Error("Cycle id cannot be null"));
 
-    cycle_id = parseInt(cycle_id);
-    if (!cycle_id) return next(new Api400Error("Cycle id must be an integer"));
+      cycle_id = parseInt(cycle_id);
+      if (!cycle_id)
+        return next(new Api400Error("Cycle id must be an integer"));
 
-    let query = `SELECT DISTINCT
+      let query = `SELECT DISTINCT
     um.user_id,
     u.email
 FROM
@@ -96,20 +102,21 @@ JOIN
 JOIN
   cycles c ON um.cycle_id = c.cycle_id`;
 
-    query += " WHERE um.cycle_id = $1";
+      query += " WHERE um.cycle_id = $1";
 
-    try {
-      const result = await pool.query(query, [cycle_id]);
-      logger.info("Successfully retrieved cycle's users!");
-      return res.json(result.rows);
-    } catch (err) {
-      logger.error(err?.message ?? "Failed to retrieve cycle's users");
-      return next(err);
+      try {
+        const result = await pool.query(query, [cycle_id]);
+        logger.info("Successfully retrieved cycle's users!");
+        return res.json(result.rows);
+      } catch (err) {
+        logger.error(err?.message ?? "Failed to retrieve cycle's users");
+        return next(err);
+      }
     }
-  });
+  );
 
   // CREATE User Metric
-  app.post(BASE_URL, async (req, res, next) => {
+  app.post(BASE_URL, hasToken, async (req, res, next) => {
     let { metrics_id, cycle_id, user_id } = req.body;
 
     if (!metrics_id || !cycle_id || !user_id)
@@ -138,7 +145,7 @@ JOIN
   });
 
   // CREATE Cycle User Metric
-  app.post(`${BASE_URL}/createcycle`, async (req, res, next) => {
+  app.post(`${BASE_URL}/createcycle`, hasToken, async (req, res, next) => {
     const { criteria, users, cycle_id } = req.body;
 
     if (!criteria.length || !users.length)
@@ -187,7 +194,7 @@ JOIN
   });
 
   // UPDATE Multiple User Metrics
-  app.patch(`${BASE_URL}/all`, async (req, res, next) => {
+  app.patch(`${BASE_URL}/all`, hasToken, async (req, res, next) => {
     const { updated } = req.body;
 
     if (!updated)
@@ -236,7 +243,7 @@ JOIN
   });
 
   // UPDATE User Metric
-  app.patch(`${BASE_URL}/:metric_id`, async (req, res, next) => {
+  app.patch(`${BASE_URL}/:metric_id`, hasToken, async (req, res, next) => {
     // const id = req.user_id; // temp to check the user editing values
     // is user or if the role is not admin
     let { metric_id } = req.params;

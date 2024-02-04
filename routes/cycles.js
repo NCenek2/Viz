@@ -5,11 +5,10 @@ const logger = require("../logs/logger");
 
 module.exports = (pool, app) => {
   const BASE_URL = "/api/cycles";
-  app.use(hasToken);
   pool.connect();
 
   // READ All Cycles
-  app.get(BASE_URL, async (req, res, next) => {
+  app.get(BASE_URL, hasToken, async (req, res, next) => {
     const query = `SELECT * FROM cycles`;
     try {
       const result = await pool.query(query);
@@ -22,7 +21,7 @@ module.exports = (pool, app) => {
   });
 
   // READ Cycle By Id
-  app.get(`${BASE_URL}/:cycle_id`, async (req, res, next) => {
+  app.get(`${BASE_URL}/:cycle_id`, hasToken, async (req, res, next) => {
     let { cycle_id } = req.params;
     if (!cycle_id) return next(new Api400Error("Cycle id is null"));
 
@@ -42,7 +41,7 @@ module.exports = (pool, app) => {
   });
 
   // CREATE Cycles
-  app.post(BASE_URL, async (req, res, next) => {
+  app.post(BASE_URL, hasToken, async (req, res, next) => {
     const { start_date } = req.body;
     if (!start_date || !/\d{4}-\d{2}-\d{2}/.test(start_date))
       return next(
@@ -90,7 +89,7 @@ module.exports = (pool, app) => {
   });
 
   // UPDATE Cycles
-  app.patch(`${BASE_URL}/:cycle_id`, async (req, res, next) => {
+  app.patch(`${BASE_URL}/:cycle_id`, hasToken, async (req, res, next) => {
     let { cycle_id } = req.params;
     const { start_date, leader_id } = req.body;
     if (!cycle_id || !start_date || !/\d{4}-\d{2}-\d{2}/.test(start_date))
@@ -115,7 +114,7 @@ module.exports = (pool, app) => {
   });
 
   // DELETE Cycles
-  app.delete(`${BASE_URL}/:cycle_id`, async (req, res, next) => {
+  app.delete(`${BASE_URL}/:cycle_id`, hasToken, async (req, res, next) => {
     let { cycle_id } = req.params;
     if (!cycle_id) return next(new Api400Error("Cycle id cannot be null"));
 
