@@ -42,7 +42,7 @@ app.use(cookieParser());
 app.use(cors(corsOptions));
 
 app.get("/", (req, res) => {
-  return res.sendStatus(200);
+  return res.redirect("/login");
 });
 
 require("./routes/auth")(pool, app);
