@@ -26,13 +26,14 @@ const Main = () => {
   const startDate = dashboardResults[0].start_date;
 
   const notFloats = () => {
-    dashboardResults.map((dashboardResult) => {
+    for (let dashboardResult of dashboardResults) {
       const newValue = parseFloat(dashboardResult.metric_value.toString());
       if (!newValue) {
         setAlert("Values are not floats");
         return true;
       }
-    });
+    }
+
     return false;
   };
 

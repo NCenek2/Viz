@@ -1,4 +1,4 @@
-import { ReactNode, createContext, useCallback } from "react";
+import { ReactNode, createContext } from "react";
 import { MetricsType } from "./Role2Context";
 import useRole2 from "../hooks/useRole2";
 import useAxiosPrivate from "../hooks/useAxiosPrivate";

@@ -5,7 +5,7 @@ import useAuth from "../../../../hooks/useAuth";
 import { useAlert } from "../../../../hooks/useAlert";
 import useHandleError from "../../../../hooks/useHandleError";
 
-type UserReport = {
+type UserReportType = {
   report_id: number;
   report: string;
   cycle_id: number;
@@ -18,7 +18,7 @@ const UserReport = () => {
   const { auth } = useAuth();
   const handleError = useHandleError();
   const { setAlert } = useAlert();
-  const [report, setReport] = useState<UserReport | null>(null);
+  const [report, setReport] = useState<UserReportType | null>(null);
   const { selectedCycle } = useDashboard();
 
   async function getReport() {
@@ -29,7 +29,7 @@ const UserReport = () => {
         params: { cycle_id: selectedCycle, user_id: auth.userInfo.user_id },
       });
 
-      const userReportData: UserReport[] = response.data;
+      const userReportData: UserReportType[] = response.data;
       if (userReportData.length) {
         setReport(userReportData[0]);
       }

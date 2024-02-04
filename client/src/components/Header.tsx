@@ -3,7 +3,7 @@ import useAuth from "../hooks/useAuth";
 import useLogout from "../hooks/useLogout";
 
 const Header = () => {
-  const { auth, setAuth } = useAuth();
+  const { auth } = useAuth();
   const logout = useLogout();
   const role = auth?.userInfo?.role ?? 0;
 

@@ -1,4 +1,3 @@
-import { useNavigate } from "react-router";
 import useCreateCycleMetrics from "../../../../hooks/useCreateCycleMetrics";
 import { useCreateCycle } from "../../../../hooks/useCreateCycle";
 import SetCriteriaItem from "./SetCriteriaItem";
