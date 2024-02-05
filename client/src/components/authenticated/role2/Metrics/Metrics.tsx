@@ -1,14 +1,14 @@
 import { ChangeEvent, useState } from "react";
-import { useMetric } from "../../../../hooks/useMetric";
 import MetricsItem from "./MetricsItem";
 import useRole2 from "../../../../hooks/useRole2";
 import { useAlert } from "../../../../hooks/useAlert";
 import { METRICS } from "../../../../constants/constants";
+import MetricsConfirm from "./MetricsConfirm";
 
 const Metrics = () => {
   const { metrics } = useRole2();
-  const { addMetric } = useMetric();
   const { setAlert } = useAlert();
+  const [confirmMetric, setConfirmMetric] = useState(false);
   const [metricName, setMetricName] = useState("");
   const [metricUnit, setMetricUnit] = useState("");
 
@@ -21,7 +21,7 @@ const Metrics = () => {
     }
   };
 
-  const handleAdd = () => {
+  const handleConfirm = () => {
     let newMetricName = metricName.trim();
     let newMetricUnit = metricUnit.trim();
     if (!newMetricName || !newMetricName)
@@ -36,9 +36,9 @@ const Metrics = () => {
         `Metric unit cannot exceed ${METRICS.METRICS_UNIT} characters`
       );
 
-    addMetric(newMetricName, newMetricUnit);
-    setMetricName("");
-    setMetricUnit("");
+    setMetricName((prevMetricName) => newMetricName);
+    setMetricUnit((prevUnitName) => newMetricUnit);
+    setConfirmMetric(true);
   };
 
   const metricStyle: any =
@@ -50,44 +50,58 @@ const Metrics = () => {
 
   return (
     <>
-      <div className="center-fixed-container metrics_container">
-        <h1 className="metrics-title">Metrics</h1>
-        <div className={`metrics_form_container`} style={metricStyle}>
-          <label htmlFor={"metricsName"}>Metric</label>
-          <input
-            id={"metricsName"}
-            type="text"
-            maxLength={METRICS.METRICS_NAME}
-            value={metricName}
-            onChange={handleChange}
-          />
-          <label htmlFor={"metricsUnit"}>Unit</label>
-          <input
-            id={"metricsUnit"}
-            type="text"
-            maxLength={METRICS.METRICS_UNIT}
-            value={metricUnit}
-            onChange={handleChange}
-          />
-          <button
-            onClick={handleAdd}
-            className="btn add-color"
-            disabled={!metricName || !metricUnit}
-          >
-            Add
-          </button>
-        </div>
-        {metrics.length > 0 && (
-          <div className="metrics-column">
-            <ul className="list-group bg-transparent">
-              {metrics.map((metric) => {
-                const { metrics_id } = metric;
-                return <MetricsItem key={metrics_id} {...metric} />;
-              })}
-            </ul>
+      {confirmMetric ? (
+        <MetricsConfirm
+          metricName={metricName}
+          metricUnit={metricUnit}
+          setMetricName={setMetricName}
+          setMetricUnit={setMetricUnit}
+          setConfirmMetric={setConfirmMetric}
+        />
+      ) : (
+        <div className="center-fixed-container metrics_container">
+          <h1 className="metrics-title">Metrics</h1>
+          <div className={`metrics_form_container`} style={metricStyle}>
+            <label htmlFor={"metricsName"}>
+              Metric ({metricName.length}/{METRICS.METRICS_NAME})
+            </label>
+            <input
+              id={"metricsName"}
+              type="text"
+              maxLength={METRICS.METRICS_NAME}
+              value={metricName}
+              onChange={handleChange}
+            />
+            <label htmlFor={"metricsUnit"}>
+              Unit ({metricUnit.length}/{METRICS.METRICS_UNIT})
+            </label>
+            <input
+              id={"metricsUnit"}
+              type="text"
+              maxLength={METRICS.METRICS_UNIT}
+              value={metricUnit}
+              onChange={handleChange}
+            />
+            <button
+              onClick={handleConfirm}
+              className="btn add-color"
+              disabled={!metricName || !metricUnit}
+            >
+              Add
+            </button>
           </div>
-        )}
-      </div>
+          {metrics.length > 0 && (
+            <div className="metrics-column">
+              <ul className="list-group bg-transparent">
+                {metrics.map((metric) => {
+                  const { metrics_id } = metric;
+                  return <MetricsItem key={metrics_id} {...metric} />;
+                })}
+              </ul>
+            </div>
+          )}
+        </div>
+      )}
     </>
   );
 };
