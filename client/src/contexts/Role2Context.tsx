@@ -3,15 +3,15 @@ import useAxiosPrivate from "../hooks/useAxiosPrivate";
 import useHandleError from "../hooks/useHandleError";
 
 export type UsersType = {
-  user_id: number;
+  userId: number;
   email: string;
   role: number;
 };
 
 export type MetricsType = {
-  metrics_id: number;
-  metrics_name: string;
-  metrics_unit: string;
+  metricId: number;
+  metricName: string;
+  metricUnit: string;
 };
 
 type Role2State = {
@@ -34,14 +34,13 @@ const useRole2Context = (initRole2State: Role2State) => {
     try {
       const usersResponse = await axiosPrivate("/users/access");
       let usersData: UsersType[] = usersResponse.data;
-      usersData.sort((userA, userB) => userA.user_id - userB.user_id);
+      usersData.sort((userA, userB) => userA.userId - userB.userId);
 
       const metricsResponse = await axiosPrivate.get("/metrics");
       let metricsData: MetricsType[] = metricsResponse.data;
       metricsData.sort(
-        (metricA, metricB) => metricA.metrics_id - metricB.metrics_id
+        (metricA, metricB) => metricA.metricId - metricB.metricId
       );
-
       setUsers(usersData);
       setMetrics(metricsData);
     } catch (err) {

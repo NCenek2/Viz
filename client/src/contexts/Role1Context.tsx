@@ -3,23 +3,23 @@ import useAxiosPrivate from "../hooks/useAxiosPrivate";
 import useHandleError from "../hooks/useHandleError";
 
 export type CurrentCycleType = {
-  cycle_id: number;
-  start_date: string;
+  cycleId: number;
+  startDate: string;
 };
 
-export type CyclesType = {
-  cycle_id: number;
-  start_date: string;
+export type CycleType = {
+  cycleId: number;
+  startDate: string;
 };
 
 type Role1State = {
-  cycles: CyclesType[];
+  cycles: CycleType[];
   currentCycle: CurrentCycleType;
 };
 
 const initialRole1State: Role1State = {
   cycles: [],
-  currentCycle: { cycle_id: 0, start_date: "" },
+  currentCycle: { cycleId: 0, startDate: "" },
 };
 
 const useRole1Context = (initRole1State: Role1State) => {
@@ -31,28 +31,28 @@ const useRole1Context = (initRole1State: Role1State) => {
   async function refreshRole1() {
     try {
       const cyclesResponse = await axiosPrivate("/cycles");
-      let cyclesData: CyclesType[] = cyclesResponse.data;
+      let cyclesData: CycleType[] = cyclesResponse.data;
       cyclesData.sort((cycleA, cycleB) => {
         return (
-          new Date(cycleB.start_date).getTime() -
-          new Date(cycleA.start_date).getTime()
+          new Date(cycleB.startDate).getTime() -
+          new Date(cycleA.startDate).getTime()
         );
       });
 
       cyclesData = cyclesData.map((cycle) => {
         return {
           ...cycle,
-          start_date: new Date(cycle.start_date).toDateString(),
+          startDate: new Date(cycle.startDate).toDateString(),
         };
       });
 
-      const currentCycleResponse = await axiosPrivate.get("current_cycle");
+      const currentCycleResponse = await axiosPrivate.get("current_cycles");
       const currentCycle: CurrentCycleType = currentCycleResponse.data;
 
       setCycles(cyclesData);
       setCurrentCycle({
         ...currentCycle,
-        start_date: new Date(currentCycle.start_date).toDateString(),
+        startDate: new Date(currentCycle.startDate).toDateString(),
       });
     } catch (err) {
       handleError(err);

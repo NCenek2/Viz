@@ -1,9 +1,9 @@
 import { MetricsType } from "../../../../contexts/Role2Context";
 
-const MetricsItem = ({ metrics_name, metrics_unit }: MetricsType) => {
+const MetricsItem = ({ metricName, metricUnit }: MetricsType) => {
   return (
     <li className="list-group-item">
-      {metrics_name} - {metrics_unit}
+      {metricName} - {metricUnit}
     </li>
   );
 };

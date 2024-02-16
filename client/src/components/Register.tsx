@@ -70,7 +70,7 @@ const SignUp = () => {
     }
 
     if (data.username.trim().length < 1) {
-      setAlert("Username should not contain only spaces");
+      setAlert("Username cannot be empty");
       return;
     }
 

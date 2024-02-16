@@ -6,8 +6,8 @@ import useHandleError from "../../../hooks/useHandleError";
 
 type RankingData = {
   email: string;
-  start_date: string;
-  metric_value: number;
+  startDate: string;
+  value: number;
   weight: number;
   threshold: number;
 };
@@ -30,24 +30,24 @@ const Rankings = () => {
   useEffect(() => {
     async function getRankings() {
       try {
-        const { cycle_id } = currentCycle;
-        let currentCycleId: number = cycle_id;
+        const { cycleId } = currentCycle;
+        let currentCycleId: number = cycleId;
 
         if (!currentCycleId) {
-          const response = await axiosPrivate.get("current_cycle");
+          const response = await axiosPrivate.get("current_cycles");
           const currentCycle: CurrentCycleType = response.data;
-          if (!currentCycle?.cycle_id) return;
-          currentCycleId = currentCycle.cycle_id;
+          if (!currentCycle?.cycleId) return;
+          currentCycleId = currentCycle.cycleId;
         }
 
         const response = await axiosPrivate.get(
-          `/metrics_criteria/rankings/${currentCycleId}`
+          `/user_metrics/rankings/${currentCycleId}`
         );
         const rankingData: RankingData[] = response.data;
 
         let rankingObj: RankingObj = {};
         for (let data of rankingData) {
-          const { email, metric_value, weight, threshold } = data;
+          const { email, value, weight, threshold } = data;
 
           if (!(email in rankingObj)) {
             rankingObj[email] = {
@@ -55,7 +55,7 @@ const Rankings = () => {
               score: 0,
             };
           }
-          let currentSum = (metric_value / threshold) * weight;
+          let currentSum = (value / threshold) * weight;
           rankingObj[email].score += currentSum;
         }
 

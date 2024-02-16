@@ -6,15 +6,11 @@ import useAxiosPrivate from "../../../../hooks/useAxiosPrivate";
 import { useAlert } from "../../../../hooks/useAlert";
 import useRole1 from "../../../../hooks/useRole1";
 import useHandleError from "../../../../hooks/useHandleError";
+import { CycleType } from "../../../../contexts/Role1Context";
 
 type FilteredUser = {
-  user_id: number;
+  userId: number;
   email: string;
-};
-
-type FilteredCycle = {
-  cycle_id: number;
-  start_date: string;
 };
 
 const Dashboard = () => {
@@ -28,15 +24,15 @@ const Dashboard = () => {
   const [search, setSearch] = useState(false);
 
   const [filteredUsers, setFilteredUsers] = useState<FilteredUser[]>([]);
-  const [filteredCycles, setFilteredCycles] = useState<FilteredCycle[]>([]);
+  const [filteredCycles, setFilteredCycles] = useState<CycleType[]>([]);
 
-  async function updateUsers(cycle_id: number) {
+  async function updateUsers(cycleId: number) {
     try {
       const cycleUsersResponse = await axiosPrivate.get(
-        `/metric/cycle_users/${cycle_id}`
+        `/user_metrics/cycle_users/${cycleId}`
       );
       let cycleUsersData: FilteredUser[] = cycleUsersResponse.data;
-      cycleUsersData.sort((userA, userB) => userA.user_id - userB.user_id);
+      cycleUsersData.sort((userA, userB) => userA.userId - userB.userId);
       if (!cycleUsersData.length) {
         reset();
         return setAlert("Cycle doesn't have any users", "warning");
@@ -47,24 +43,24 @@ const Dashboard = () => {
     }
   }
 
-  async function updateCycles(user_id: number) {
+  async function updateCycles(userId: number) {
     try {
       const userCyclesDataResponse = await axiosPrivate.get(
-        `/metric/user_cycles/${user_id}`
+        `/user_metrics/user_cycles/${userId}`
       );
 
-      let userCyclesData: FilteredCycle[] = userCyclesDataResponse.data;
+      let userCyclesData: CycleType[] = userCyclesDataResponse.data;
       userCyclesData.sort((cycleA, cycleB) => {
         return (
-          new Date(cycleB.start_date).getTime() -
-          new Date(cycleA.start_date).getTime()
+          new Date(cycleB.startDate).getTime() -
+          new Date(cycleA.startDate).getTime()
         );
       });
 
       userCyclesData = userCyclesData.map((cycle) => {
         return {
           ...cycle,
-          start_date: new Date(cycle.start_date).toDateString(),
+          startDate: new Date(cycle.startDate).toDateString(),
         };
       });
 
@@ -87,10 +83,10 @@ const Dashboard = () => {
     return true;
   }
 
-  const checkFilters = (user_id: number, cycle_id: number) => {
+  const checkFilters = (userId: number, cycleId: number) => {
     setSearch(false);
 
-    if (user_id === 0 && cycle_id === 0) {
+    if (userId === 0 && cycleId === 0) {
       return reset();
     }
     return false;
@@ -148,18 +144,18 @@ const Dashboard = () => {
             <option value={"0"}>Cycles</option>
             {filteredCycles.length
               ? filteredCycles.map((cycle) => {
-                  const { cycle_id, start_date } = cycle;
+                  const { cycleId, startDate } = cycle;
                   return (
-                    <option key={cycle_id} value={cycle_id}>
-                      {start_date}
+                    <option key={cycleId} value={cycleId}>
+                      {startDate}
                     </option>
                   );
                 })
               : cycles.map((cycle) => {
-                  const { cycle_id, start_date } = cycle;
+                  const { cycleId, startDate } = cycle;
                   return (
-                    <option key={cycle_id} value={cycle_id}>
-                      {start_date}
+                    <option key={cycleId} value={cycleId}>
+                      {startDate}
                     </option>
                   );
                 })}
@@ -173,17 +169,17 @@ const Dashboard = () => {
             <option value={"0"}>Users</option>
             {filteredUsers.length
               ? filteredUsers.map((user) => {
-                  const { user_id, email } = user;
+                  const { userId, email } = user;
                   return (
-                    <option key={user_id} value={user_id}>
+                    <option key={userId} value={userId}>
                       {email}
                     </option>
                   );
                 })
               : users.map((user) => {
-                  const { user_id, email } = user;
+                  const { userId, email } = user;
                   return (
-                    <option key={user_id} value={user_id}>
+                    <option key={userId} value={userId}>
                       {email}
                     </option>
                   );

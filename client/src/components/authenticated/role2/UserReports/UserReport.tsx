@@ -6,10 +6,10 @@ import { useAlert } from "../../../../hooks/useAlert";
 import useHandleError from "../../../../hooks/useHandleError";
 
 type UserReportType = {
-  report_id: number;
+  reportId: number;
   report: string;
-  cycle_id: number;
-  start_date: string;
+  cycleId: number;
+  startDate: string;
   acknowledged: false;
 };
 
@@ -23,10 +23,10 @@ const UserReport = () => {
 
   async function getReport() {
     if (!auth) return;
-    if (!auth?.userInfo?.user_id) return;
+    if (!auth?.userInfo?.userId) return;
     try {
       const response = await axiosPrivate.get(`/reports`, {
-        params: { cycle_id: selectedCycle, user_id: auth.userInfo.user_id },
+        params: { cycleId: selectedCycle, userId: auth.userInfo.userId },
       });
 
       const userReportData: UserReportType[] = response.data;
@@ -44,11 +44,14 @@ const UserReport = () => {
 
   async function acknowledgeReport() {
     if (!report) return;
+    const { reportId } = report;
+    let { userId } = auth?.userInfo ?? { userId: 0 };
+    userId = parseInt(userId as unknown as string);
     try {
       await axiosPrivate({
-        url: "/reports/acknowledge",
+        url: `/reports/acknowledge/${reportId}`,
         method: "patch",
-        data: { report_id: report.report_id, user_id: auth?.userInfo?.user_id },
+        data: { userId },
       });
 
       getReport();

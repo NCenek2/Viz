@@ -8,8 +8,8 @@ import Report from "./Report";
 import useHandleError from "../../../../hooks/useHandleError";
 
 type FilteredCycle = {
-  cycle_id: number;
-  start_date: string;
+  cycleId: number;
+  startDate: string;
 };
 
 const Reports = () => {
@@ -25,25 +25,25 @@ const Reports = () => {
     []
   );
 
-  async function updateCycles(user_id: number) {
-    if (!user_id) return;
+  async function updateCycles(userId: number) {
+    if (!userId) return;
     try {
       const userCyclesDataResponse = await axiosPrivate.get(
-        `/metric/user_cycles/${user_id}`
+        `/user_metrics/user_cycles/${userId}`
       );
 
       let userCyclesData: FilteredCycle[] = userCyclesDataResponse.data;
       userCyclesData.sort((cycleA, cycleB) => {
         return (
-          new Date(cycleB.start_date).getTime() -
-          new Date(cycleA.start_date).getTime()
+          new Date(cycleB.startDate).getTime() -
+          new Date(cycleA.startDate).getTime()
         );
       });
 
       userCyclesData = userCyclesData.map((cycle) => {
         return {
           ...cycle,
-          start_date: new Date(cycle.start_date).toDateString(),
+          startDate: new Date(cycle.startDate).toDateString(),
         };
       });
 
@@ -65,10 +65,10 @@ const Reports = () => {
     return true;
   }
 
-  const checkFilters = (user_id: number, cycle_id: number) => {
+  const checkFilters = (userId: number, cycleId: number) => {
     setSearch(false);
 
-    if (user_id === 0 && cycle_id === 0) {
+    if (userId === 0 && cycleId === 0) {
       return reset();
     }
     return false;
@@ -124,18 +124,18 @@ const Reports = () => {
               ? ""
               : filteredCycles.length
               ? filteredCycles.map((cycle) => {
-                  const { cycle_id, start_date } = cycle;
+                  const { cycleId, startDate } = cycle;
                   return (
-                    <option key={cycle_id} value={cycle_id}>
-                      {start_date}
+                    <option key={cycleId} value={cycleId}>
+                      {startDate}
                     </option>
                   );
                 })
               : cycles.map((cycle) => {
-                  const { cycle_id, start_date } = cycle;
+                  const { cycleId, startDate } = cycle;
                   return (
-                    <option key={cycle_id} value={cycle_id}>
-                      {start_date}
+                    <option key={cycleId} value={cycleId}>
+                      {startDate}
                     </option>
                   );
                 })}
@@ -149,17 +149,17 @@ const Reports = () => {
             <option value={"0"}>Users</option>
             {users.length
               ? users.map((user) => {
-                  const { user_id, email } = user;
+                  const { userId, email } = user;
                   return (
-                    <option key={user_id} value={user_id}>
+                    <option key={userId} value={userId}>
                       {email}
                     </option>
                   );
                 })
               : users.map((user) => {
-                  const { user_id, email } = user;
+                  const { userId, email } = user;
                   return (
-                    <option key={user_id} value={user_id}>
+                    <option key={userId} value={userId}>
                       {email}
                     </option>
                   );

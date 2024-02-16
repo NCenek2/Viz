@@ -5,7 +5,7 @@ import { UsersType } from "../../../../contexts/Role2Context";
 import { useAlert } from "../../../../hooks/useAlert";
 import useHandleError from "../../../../hooks/useHandleError";
 
-const AccessItem = ({ user_id, email, role }: UsersType) => {
+const AccessItem = ({ userId, email, role }: UsersType) => {
   const axiosPrivate = useAxiosPrivate();
   const handleError = useHandleError();
   const { refreshRole2 } = useRole2();
@@ -13,15 +13,14 @@ const AccessItem = ({ user_id, email, role }: UsersType) => {
   const [checked, setChecked] = useState(role > 1);
 
   const toggleAdmin = async (isAdmin: boolean) => {
-    const newRole = isAdmin ? 2 : 1;
+    const role = isAdmin ? 2 : 1;
 
     try {
-      const options = {
-        url: "/users/access",
+      await axiosPrivate({
+        url: `/users/access/${userId}`,
         method: "patch",
-        data: { role: newRole, user_id },
-      };
-      await axiosPrivate(options);
+        data: { role },
+      });
       refreshRole2();
       if (isAdmin === true) {
         setAlert(`Admin permissions given to ${email}`, "success");
@@ -45,7 +44,7 @@ const AccessItem = ({ user_id, email, role }: UsersType) => {
         <input
           type="checkbox"
           className="form-check-input my-check"
-          id={user_id.toString()}
+          id={userId.toString()}
           checked={checked}
           onChange={handleChecked}
         />

@@ -23,11 +23,11 @@ const Main = () => {
       </div>
     );
 
-  const startDate = dashboardResults[0].start_date;
+  const startDate = dashboardResults[0].startDate;
 
   const notFloats = () => {
     for (let dashboardResult of dashboardResults) {
-      const newValue = parseFloat(dashboardResult.metric_value.toString());
+      const newValue = parseFloat(dashboardResult.userMetricValue.toString());
       if (!newValue) {
         setAlert("Values are not floats");
         return true;
@@ -43,7 +43,7 @@ const Main = () => {
     let updated: DashboardResultsType[] = [];
 
     for (let dashboardResult of dashboardResults) {
-      if (updatedSet.has(dashboardResult.metric_id)) {
+      if (updatedSet.has(dashboardResult.userMetricId)) {
         updated.push(dashboardResult);
       }
     }
@@ -64,9 +64,11 @@ const Main = () => {
         )}
         <h2>Cycle of {new Date(startDate).toDateString()}</h2>
         <div className="dashboard-results">
-          {dashboardResults.map((user_metric) => {
-            const { metric_id } = user_metric;
-            return <DashboardResultsItem key={metric_id} {...user_metric} />;
+          {dashboardResults.map((user_metrics) => {
+            const { userMetricId } = user_metrics;
+            return (
+              <DashboardResultsItem key={userMetricId} {...user_metrics} />
+            );
           })}
         </div>
       </div>

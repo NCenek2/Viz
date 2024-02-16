@@ -33,14 +33,14 @@ const SetCriteria = ({ setSettingCriteria }: SetCriteriaProps) => {
     const fixedTotal = customRound(total);
 
     if (fixedTotal !== 1) {
-      return setAlert("Metric Weights should add to 1");
+      return setAlert("Metric weights should add to 1");
     }
     const notProperThreholds = state.criteria.some((criteria) => {
       return criteria.threshold <= 0;
     });
 
     if (notProperThreholds) {
-      return setAlert("Metric Thresholds should be greater than 0");
+      return setAlert("Metric thresholds should be greater than 0");
     }
 
     create();
@@ -63,8 +63,8 @@ const SetCriteria = ({ setSettingCriteria }: SetCriteriaProps) => {
         </thead>
         <tbody>
           {state.metrics.map((metric) => {
-            const { metrics_id } = metric;
-            return <SetCriteriaItem key={metrics_id} {...metric} />;
+            const { metricId } = metric;
+            return <SetCriteriaItem key={metricId} {...metric} />;
           })}
         </tbody>
       </table>

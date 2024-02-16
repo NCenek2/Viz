@@ -19,7 +19,7 @@ const CreateCycleItem = ({
   const [selected, setSelected] = useState<boolean>(
     type === "users"
       ? state.users.has(value)
-      : state.metrics.some((metric) => metric.metrics_id === value)
+      : state.metrics.some((metric) => metric.metricId === value)
   );
   const handleChange = () => {
     const added = !selected;
@@ -33,9 +33,9 @@ const CreateCycleItem = ({
       }
     } else {
       const payload: MetricsType = {
-        metrics_id: value,
-        metrics_name: description,
-        metrics_unit: "",
+        metricId: value,
+        metricName: description,
+        metricUnit: "",
       };
       if (added) {
         dispatch({ type: CREATE_CYCLE_ACTIONS.ADD_METRIC, payload });

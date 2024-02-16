@@ -17,7 +17,7 @@ const useUpdateDashboardResults = () => {
   const update = async ({ updated }: UseUpdateDashboardResults) => {
     try {
       const updateUserMetricsOptions = {
-        url: "/metric/all",
+        url: "/user_metrics/dashboard",
         method: "patch",
         data: { updated },
       };

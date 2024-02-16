@@ -17,7 +17,7 @@ const CreateCycle = () => {
   };
 
   const handleNext = () => {
-    if (!state.metrics.length || !state.users.size || !state.date) {
+    if (!state.metrics.length || !state.users.size || !state.startDate) {
       return setAlert("Each criteria should have at least one option selected");
     }
 
@@ -36,11 +36,11 @@ const CreateCycle = () => {
             Users
             <div className="create-cycle-height">
               {users.map((user) => {
-                const { user_id, email } = user;
+                const { userId, email } = user;
                 return (
                   <CreateCycleItem
-                    key={user_id}
-                    value={user_id}
+                    key={userId}
+                    value={userId}
                     description={email}
                     type="users"
                   />
@@ -52,12 +52,12 @@ const CreateCycle = () => {
             Metrics
             <div className="create-cycle-height">
               {metrics.map((cycle) => {
-                const { metrics_id, metrics_name, metrics_unit } = cycle;
+                const { metricId, metricName, metricUnit } = cycle;
                 return (
                   <CreateCycleItem
-                    key={metrics_id}
-                    value={metrics_id}
-                    description={`${metrics_name} (${metrics_unit})`}
+                    key={metricId}
+                    value={metricId}
+                    description={`${metricName} (${metricUnit})`}
                     type="metrics"
                   />
                 );
@@ -69,7 +69,7 @@ const CreateCycle = () => {
             <input
               id="cycle-date"
               type="date"
-              value={state.date}
+              value={state.startDate}
               onChange={handleDate}
             />
           </div>

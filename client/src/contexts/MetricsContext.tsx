@@ -32,12 +32,12 @@ const useMetricsContext = (initMetricsState: MetricsState) => {
   const { setAlert } = useAlert();
   const { refreshRole2 } = useRole2();
 
-  async function addMetric(metrics_name: string, metrics_unit: string) {
+  async function addMetric(metricName: string, metricUnit: string) {
     try {
       await axiosPrivate({
         url: "/metrics",
         method: "post",
-        data: { metrics_name, metrics_unit },
+        data: { metricName, metricUnit },
       });
 
       refreshRole2();

@@ -10,8 +10,8 @@ const Access = () => {
         <h2 className="mb-3">Admin Access</h2>
         <div className="users-container">
           {users.map((user) => {
-            const { user_id } = user;
-            return <AccessItem key={user_id} {...user} />;
+            const { userId } = user;
+            return <AccessItem key={userId} {...user} />;
           })}
         </div>
       </div>

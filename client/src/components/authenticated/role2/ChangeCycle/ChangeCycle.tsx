@@ -27,10 +27,10 @@ const ChangeCurrentCycle = () => {
         >
           <option value={"0"}>Cycles</option>
           {cycles.map((cycle) => {
-            const { cycle_id, start_date } = cycle;
+            const { cycleId, startDate } = cycle;
             return (
-              <option key={cycle_id} value={cycle_id}>
-                {start_date}
+              <option key={cycleId} value={cycleId}>
+                {startDate}
               </option>
             );
           })}

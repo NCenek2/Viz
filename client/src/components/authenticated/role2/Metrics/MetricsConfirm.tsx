@@ -1,3 +1,4 @@
+import { useAlert } from "../../../../hooks/useAlert";
 import { useMetric } from "../../../../hooks/useMetric";
 
 type MetricsConfirmProps = {
@@ -16,7 +17,11 @@ const MetricsConfirm = ({
   setConfirmMetric,
 }: MetricsConfirmProps) => {
   const { addMetric } = useMetric();
+  const { setAlert } = useAlert();
   const handleAdd = () => {
+    if (!metricName) return setAlert("Metric name cannot be empty");
+    if (!metricUnit) return setAlert("Metric unit cannot be empty");
+
     addMetric(metricName, metricUnit);
     setMetricName("");
     setMetricUnit("");
@@ -24,7 +29,7 @@ const MetricsConfirm = ({
   };
 
   return (
-    <div className="center-fixed-container text-center">
+    <div className="center-fixed-container w-100 text-center">
       <span>
         <h3>
           Add {metricName} - {metricUnit}?

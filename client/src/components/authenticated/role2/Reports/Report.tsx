@@ -7,16 +7,16 @@ import useHandleError from "../../../../hooks/useHandleError";
 
 type ReportType = {
   report: string;
-  cycle_id: number;
-  user_id: number;
-  report_id?: number;
+  cycleId: number;
+  userId: number;
+  reportId?: number;
   acknowledged: boolean;
 };
 
 const initialReport = {
   report: "",
-  cycle_id: 0,
-  user_id: 0,
+  cycleId: 0,
+  userId: 0,
   acknowledged: false,
 };
 
@@ -27,8 +27,8 @@ const Report = () => {
   const { selectedCycle, selectedUser } = useDashboard();
   const [report, setReport] = useState<ReportType>({
     ...initialReport,
-    cycle_id: selectedCycle,
-    user_id: selectedUser,
+    cycleId: selectedCycle,
+    userId: selectedUser,
   });
 
   const [madeChanges, setMadeChanges] = useState(false);
@@ -37,7 +37,7 @@ const Report = () => {
     if (!selectedCycle || !selectedUser) return;
 
     const result = await axiosPrivate.get(
-      `/reports?user_id=${selectedUser}&cycle_id=${selectedCycle}`
+      `/reports?userId=${selectedUser}&cycleId=${selectedCycle}`
     );
 
     const reportData: ReportType[] = result.data;
@@ -91,11 +91,12 @@ const Report = () => {
     }
 
     async function updateReport() {
+      const { reportId } = report;
       try {
         await axiosPrivate({
-          url: `/reports/${report.report_id}`,
+          url: `/reports/${reportId}`,
           method: "patch",
-          data: report,
+          data: { report: report.report },
         });
         getReport();
         setAlert("Report Updated", "success");
@@ -104,7 +105,7 @@ const Report = () => {
       }
     }
 
-    if (!report.report_id) {
+    if (!report.reportId) {
       createReport();
     } else {
       updateReport();
@@ -123,13 +124,21 @@ const Report = () => {
     });
   };
 
-  const reportTitle = !report.report_id ? "New " : "";
+  const reportTitle = !report.reportId ? "New " : "";
 
   const reportAcknowledged = report.acknowledged
     ? "✔ "
-    : report.acknowledged === false && report.report_id
+    : report.acknowledged === false && report.reportId
     ? "❌"
     : "";
+
+  if (!report.reportId) {
+    return (
+      <div className="center-fixed-container">
+        <h2>No Report</h2>
+      </div>
+    );
+  }
 
   return (
     <div className="report-container">
@@ -155,7 +164,7 @@ const Report = () => {
         disabled={!report.report.length || !madeChanges}
         onClick={handleClick}
       >
-        {!report.report_id ? "Create" : "Update"}
+        {!report.reportId ? "Create" : "Update"}
       </button>
     </div>
   );

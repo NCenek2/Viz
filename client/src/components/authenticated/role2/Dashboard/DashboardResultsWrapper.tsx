@@ -4,7 +4,7 @@ import DashboardResults from "./DashboardResults";
 const DashboardResultsWrapper = () => {
   const { selectedCycle, selectedUser } = useDashboard();
   return (
-    <DashboardResultsProvider cycle_id={selectedCycle} user_id={selectedUser}>
+    <DashboardResultsProvider cycleId={selectedCycle} userId={selectedUser}>
       <DashboardResults />
     </DashboardResultsProvider>
   );

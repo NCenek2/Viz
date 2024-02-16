@@ -3,7 +3,7 @@ import useLogout from "./useLogout";
 
 type ReturnError = {
   message: string;
-  status: number;
+  statusCode: number;
 };
 
 const useHandleError = () => {
@@ -11,28 +11,29 @@ const useHandleError = () => {
   const { setAlert } = useAlert();
 
   function handleError(err: any): ReturnError {
-    let error: ReturnError = { message: "Error", status: 500 };
+    let message = "Error";
+    let statusCode = 500;
 
     if (err?.response?.data?.message) {
-      error = {
-        message: err.response.data.message,
-        status: parseInt(err.response.data.status) ?? 500,
-      };
+      message = err.response.data.message;
+      if (Array.isArray(message) && message.length > 0) {
+        message = message[0];
+      }
+      statusCode = err?.response?.data?.statusCode;
     } else if (err?.response?.status) {
-      error = {
-        message: err?.response?.statusText ?? "Error",
-        status: parseInt(err?.response?.status) ?? 500,
-      };
+      message = err?.response?.statusText;
+      statusCode = err.response.status;
     } else {
-      error = {
-        message: err?.message ?? "Error",
-        status: parseInt(err?.status) ?? 500,
-      };
+      message = err?.message;
+      statusCode = err?.status;
     }
 
-    setAlert(error.message);
-    if (error.status === 403) logout();
-    return error;
+    message ??= "Error";
+    statusCode ??= 500;
+
+    setAlert(message);
+    if (statusCode === 403) logout();
+    return { message, statusCode };
   }
 
   return handleError;

@@ -1,6 +1,6 @@
 export const METRICS = {
-  METRICS_NAME: 20,
-  METRICS_UNIT: 10,
+  metricName: 20,
+  metricUnit: 10,
 };
 
 export const USERS = {

@@ -15,31 +15,31 @@ const CREATE_CYCLE_TYPE = {
 
 export type CreateCycleActionType = typeof CREATE_CYCLE_TYPE;
 
-type MetricsCriteria = {
-  metrics_id: number;
+type MetricCriterionData = {
+  metricId: number;
   weight: number;
   threshold: number;
 };
 
 type CreateCycleAction = {
   type: string;
-  payload?: string | MetricsType | number | MetricsCriteria;
+  payload?: string | MetricsType | number | MetricCriterionData;
 };
 
 type CreateCycleState = {
   metrics: MetricsType[];
-  criteria: MetricsCriteria[];
+  criteria: MetricCriterionData[];
   users: Set<number>;
-  date: string;
-  cycle_id: number;
+  startDate: string;
+  cycleId: number;
 };
 
 const initialCreateCycleState: CreateCycleState = {
   metrics: [],
   criteria: [],
   users: new Set<number>(),
-  date: "",
-  cycle_id: 0,
+  startDate: "",
+  cycleId: 0,
 };
 
 const createCycleReducer = (
@@ -55,9 +55,9 @@ const createCycleReducer = (
       const newMetric = payload as MetricsType;
       if (!newMetric) throw new Error("Payload is not of type MetricsType");
 
-      const newMetrics = [...state.metrics, newMetric];
+      const metrics = [...state.metrics, newMetric];
 
-      return { ...state, metrics: newMetrics };
+      return { ...state, metrics };
     }
     case CREATE_CYCLE_TYPE.REMOVE_METRIC: {
       if (!payload) throw new Error("Payload is undefined in ADD_METRIC");
@@ -65,82 +65,82 @@ const createCycleReducer = (
       const oldMetric = payload as MetricsType;
       if (!oldMetric) throw new Error("Payload is not of type MetricsType");
 
-      const newMetrics = state.metrics.filter(
-        (metric) => metric.metrics_id !== oldMetric.metrics_id
+      const metrics = state.metrics.filter(
+        (metric) => metric.metricId !== oldMetric.metricId
       );
 
-      return { ...state, metrics: newMetrics };
+      return { ...state, metrics };
     }
     case CREATE_CYCLE_TYPE.ADD_USER: {
       if (!payload) throw new Error("Payload is undefined in ADD_USER");
 
-      const newUser = payload as number;
-      if (!newUser) throw new Error("Payload is not a number");
+      const user = payload as number;
+      if (!user) throw new Error("Payload is not a number");
 
-      const newUsers = state.users;
-      newUsers.add(newUser);
+      const users = state.users;
+      users.add(user);
 
-      return { ...state, users: newUsers };
+      return { ...state, users };
     }
     case CREATE_CYCLE_TYPE.REMOVE_USER: {
       if (!payload) throw new Error("Payload is undefined in ADD_USER");
 
-      const oldUser = payload as number;
-      if (!oldUser) throw new Error("Payload is not a number");
+      const user = payload as number;
+      if (!user) throw new Error("Payload is not a number");
 
-      const newUsers = state.users;
-      newUsers.delete(oldUser);
+      const users = state.users;
+      users.delete(user);
 
-      return { ...state, users: newUsers };
+      return { ...state, users };
     }
     case CREATE_CYCLE_TYPE.SELECT_DATE: {
       if (!payload) throw new Error("Payload is undefined in SELECT_DATE");
 
-      const newDate = payload as string;
-      if (!newDate) throw new Error("Payload is not a string");
+      const startDate = payload as string;
+      if (!startDate) throw new Error("Payload is not a string");
 
-      return { ...state, date: newDate };
+      return { ...state, startDate };
     }
 
     case CREATE_CYCLE_TYPE.HANDLE_NEXT: {
-      const newCriteria: MetricsCriteria[] = state.metrics.map((metric) => {
-        const { metrics_id } = metric;
-        return { metrics_id, weight: 0, threshold: 0 };
+      const criteria: MetricCriterionData[] = state.metrics.map((metric) => {
+        const { metricId } = metric;
+        return { metricId, weight: 0, threshold: 0 };
       });
-      return { ...state, criteria: newCriteria };
+      return { ...state, criteria };
     }
     case CREATE_CYCLE_TYPE.EDIT_WEIGHT: {
       if (!payload) throw new Error("Payload is undefined in SELECT_DATE");
 
-      const newCriteria = payload as MetricsCriteria;
-      if (!newCriteria)
-        throw new Error("Criteria is not of type MetricsCriteria");
+      const criterion = payload as MetricCriterionData;
+      if (!criterion)
+        throw new Error("Criteria is not of type MetricCriterionData");
 
-      const newCriterias = state.criteria.map((crit) => {
-        if (crit.metrics_id == newCriteria.metrics_id) {
-          let weight = newCriteria.weight;
+      const criteria = state.criteria.map((crit) => {
+        if (crit.metricId == criterion.metricId) {
+          let { weight } = criterion;
           return { ...crit, weight };
         }
         return crit;
       });
-      return { ...state, criteria: newCriterias };
+      return { ...state, criteria };
     }
     case CREATE_CYCLE_TYPE.EDIT_THRESHOLD: {
       if (!payload) throw new Error("Payload is undefined in SELECT_DATE");
 
-      const newCriteria = payload as MetricsCriteria;
-      if (!newCriteria)
-        throw new Error("Criteria is not of type MetricsCriteria");
+      const criterion = payload as MetricCriterionData;
+      if (!criterion)
+        throw new Error("Criteria is not of type MetricCriterionData");
 
-      const newCriterias = state.criteria.map((crit) => {
-        if (crit.metrics_id == newCriteria.metrics_id) {
-          let threshold = newCriteria.threshold;
+      const criteria = state.criteria.map((crit) => {
+        if (crit.metricId == criterion.metricId) {
+          let threshold = criterion.threshold;
           return { ...crit, threshold };
         }
         return crit;
       });
 
-      return { ...state, criteria: newCriterias };
+      return { ...state, criteria };
     }
     case CREATE_CYCLE_TYPE.CREATE: {
       return { ...initialCreateCycleState };

@@ -4,10 +4,10 @@ import useAxiosPrivate from "./useAxiosPrivate";
 import { useCreateCycle } from "./useCreateCycle";
 import useRole1 from "./useRole1";
 import useHandleError from "./useHandleError";
+import { CycleType } from "../contexts/Role1Context";
 
 type MetricsCriteria = {
-  criteria_id: number;
-  metrics_id: number;
+  metricCriterionId: number;
 };
 
 const useCreateCycleMetrics = () => {
@@ -19,10 +19,11 @@ const useCreateCycleMetrics = () => {
   const { state, dispatch, CREATE_CYCLE_ACTIONS } = useCreateCycle();
 
   const create = async () => {
+    const { criteria, startDate, users, metrics } = state;
     const createCriteriaOptions = {
-      url: "/metrics_criteria/createcycle",
+      url: "/metric_criteria/createcycle",
       method: "post",
-      data: { criteria: state.criteria },
+      data: criteria,
     };
 
     const createCriteriaResponse = await axiosPrivate(createCriteriaOptions);
@@ -31,17 +32,25 @@ const useCreateCycleMetrics = () => {
     const createCycleOptions = {
       url: "/cycles",
       method: "post",
-      data: { start_date: state.date },
+      data: { startDate },
     };
-    const newCycleData = await axiosPrivate(createCycleOptions);
+    const newCycleResponse = await axiosPrivate(createCycleOptions);
+    const newCycleData: CycleType = newCycleResponse.data;
+    let { cycleId } = newCycleData;
+
+    const metricItems = metrics.map((metric, index) => {
+      const { metricId } = metric;
+      const metricCriterionId = criteriaData[index];
+      return { metricId, metricCriterionId };
+    });
 
     const createCycleMetricsOptions = {
-      url: "/metric/createcycle",
+      url: "/user_metrics/createcycle",
       method: "post",
       data: {
-        criteria: criteriaData,
-        users: Array.from(state.users),
-        cycle_id: newCycleData.data,
+        cycleId,
+        metricItems,
+        userIds: Array.from(users),
       },
     };
 

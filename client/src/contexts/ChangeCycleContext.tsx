@@ -21,17 +21,14 @@ const useChangeCycleContext = (initChangeCycleState: ChangeCycleState) => {
   const { selectedCycle } = useDashboard();
 
   async function changeCycle() {
-    if (
-      !selectedCycle ||
-      selectedCycle == 0 ||
-      selectedCycle == currentCycle.cycle_id
-    )
-      return;
+    const cycleId = selectedCycle;
+    if (!cycleId || cycleId == 0 || cycleId == currentCycle.cycleId) return;
 
     try {
       await axiosPrivate({
-        url: `/current_cycle/${selectedCycle}`,
+        url: `/current_cycles`,
         method: "patch",
+        data: { cycleId },
       });
 
       setAlert("Current Cycle Updated", "success");
@@ -41,7 +38,7 @@ const useChangeCycleContext = (initChangeCycleState: ChangeCycleState) => {
     }
   }
 
-  const current_date = currentCycle?.start_date;
+  const current_date = currentCycle?.startDate;
   return { current_date, changeCycle };
 };
 

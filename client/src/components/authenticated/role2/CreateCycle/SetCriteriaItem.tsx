@@ -2,7 +2,7 @@ import { ChangeEvent, useState } from "react";
 import { MetricsType } from "../../../../contexts/Role2Context";
 import { useCreateCycle } from "../../../../hooks/useCreateCycle";
 
-const SetCriteriaItem = ({ metrics_id, metrics_name }: MetricsType) => {
+const SetCriteriaItem = ({ metricId, metricName }: MetricsType) => {
   const [weight, setWeight] = useState("");
   const [threshold, setThreshold] = useState("");
   const { dispatch, CREATE_CYCLE_ACTIONS } = useCreateCycle();
@@ -16,7 +16,7 @@ const SetCriteriaItem = ({ metrics_id, metrics_name }: MetricsType) => {
 
     dispatch({
       type: CREATE_CYCLE_ACTIONS.EDIT_WEIGHT,
-      payload: { metrics_id, weight: newWeight, threshold: 0 },
+      payload: { metricId, weight: newWeight, threshold: 0 },
     });
   };
 
@@ -29,13 +29,13 @@ const SetCriteriaItem = ({ metrics_id, metrics_name }: MetricsType) => {
 
     dispatch({
       type: CREATE_CYCLE_ACTIONS.EDIT_THRESHOLD,
-      payload: { metrics_id, weight: 0, threshold: newThreshold },
+      payload: { metricId, weight: 0, threshold: newThreshold },
     });
   };
 
   return (
     <tr>
-      <td>{metrics_name}</td>
+      <td>{metricName}</td>
       <td>
         <input
           type="text"

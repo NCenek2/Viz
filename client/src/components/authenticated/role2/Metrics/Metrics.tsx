@@ -14,7 +14,7 @@ const Metrics = () => {
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { id, value } = e.target;
-    if (id === "metricsName") {
+    if (id === "metricName") {
       setMetricName((prev) => value);
     } else {
       setMetricUnit((prev) => value);
@@ -27,13 +27,13 @@ const Metrics = () => {
     if (!newMetricName || !newMetricName)
       return setAlert("Metric fields cannot be empty");
 
-    if (newMetricName.length > METRICS.METRICS_NAME)
+    if (newMetricName.length > METRICS.metricName)
       return setAlert(
-        `Metric name cannot exceed ${METRICS.METRICS_NAME} characters`
+        `Metric name cannot exceed ${METRICS.metricName} characters`
       );
-    if (newMetricUnit.length > METRICS.METRICS_UNIT)
+    if (newMetricUnit.length > METRICS.metricUnit)
       return setAlert(
-        `Metric unit cannot exceed ${METRICS.METRICS_UNIT} characters`
+        `Metric unit cannot exceed ${METRICS.metricUnit} characters`
       );
 
     setMetricName((prevMetricName) => newMetricName);
@@ -62,23 +62,23 @@ const Metrics = () => {
         <div className="center-fixed-container metrics_container">
           <h1 className="metrics-title">Metrics</h1>
           <div className={`metrics_form_container`} style={metricStyle}>
-            <label htmlFor={"metricsName"}>
-              Metric ({metricName.length}/{METRICS.METRICS_NAME})
+            <label htmlFor="metricName">
+              Metric ({metricName.length}/{METRICS.metricName})
             </label>
             <input
-              id={"metricsName"}
+              id="metricName"
               type="text"
-              maxLength={METRICS.METRICS_NAME}
+              maxLength={METRICS.metricName}
               value={metricName}
               onChange={handleChange}
             />
-            <label htmlFor={"metricsUnit"}>
-              Unit ({metricUnit.length}/{METRICS.METRICS_UNIT})
+            <label htmlFor="metricUnit">
+              Unit ({metricUnit.length}/{METRICS.metricUnit})
             </label>
             <input
-              id={"metricsUnit"}
+              id="metricUnit"
               type="text"
-              maxLength={METRICS.METRICS_UNIT}
+              maxLength={METRICS.metricUnit}
               value={metricUnit}
               onChange={handleChange}
             />
@@ -94,8 +94,8 @@ const Metrics = () => {
             <div className="metrics-column">
               <ul className="list-group bg-transparent">
                 {metrics.map((metric) => {
-                  const { metrics_id } = metric;
-                  return <MetricsItem key={metrics_id} {...metric} />;
+                  const { metricId } = metric;
+                  return <MetricsItem key={metricId} {...metric} />;
                 })}
               </ul>
             </div>

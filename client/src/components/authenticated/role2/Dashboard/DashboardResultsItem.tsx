@@ -3,15 +3,15 @@ import { DashboardResultsType } from "../../../../contexts/DashboardResultsConte
 import useDashboardResults from "../../../../hooks/useDashboardResults";
 
 const DashboardResultsItem = ({
-  metrics_name,
-  metric_value,
-  metrics_unit,
-  metric_id,
+  metricName,
+  userMetricValue,
+  metricUnit,
+  userMetricId,
   weight,
   threshold,
-}: Omit<DashboardResultsType, "metrics_id" | "start_date">) => {
+}: Omit<DashboardResultsType, "metricId" | "startDate">) => {
   const [currentValue, setCurrentValue] = useState<string>(
-    metric_value.toString()
+    userMetricValue.toString()
   );
 
   const { setMadeChanges, updatedSet, setUpdatedSet, setDashboardResults } =
@@ -22,21 +22,20 @@ const DashboardResultsItem = ({
     const { value } = e.target;
     setCurrentValue((prev) => value);
 
-    if (metric_id !== -1 && !updatedSet.has(metric_id)) {
+    if (userMetricId !== -1 && !updatedSet.has(userMetricId)) {
       setUpdatedSet((prevUpdatedSet) => {
-        prevUpdatedSet.add(metric_id);
+        prevUpdatedSet.add(userMetricId);
         return prevUpdatedSet;
       });
     }
 
-    let new_metric_id: number;
-    new_metric_id = parseFloat(value);
-
-    if (new_metric_id) {
+    let userMetricValue: number;
+    userMetricValue = parseFloat(value);
+    if (userMetricValue) {
       setDashboardResults((prevDashboardResults) =>
         prevDashboardResults.map((dashboardResult) => {
-          if (dashboardResult.metric_id === metric_id) {
-            return { ...dashboardResult, metric_value: new_metric_id };
+          if (dashboardResult.userMetricId === userMetricId) {
+            return { ...dashboardResult, userMetricValue };
           }
           return dashboardResult;
         })
@@ -47,14 +46,14 @@ const DashboardResultsItem = ({
   return (
     <div className="d-flex flex-column m-2">
       <h4>
-        {metrics_name}{" "}
+        {metricName}{" "}
         <span className="dashboard-results-weight">({weight})</span>
       </h4>
-      <label htmlFor={metric_id.toString()}>
-        {threshold} ({metrics_unit})
+      <label htmlFor={userMetricId.toString()}>
+        {threshold} ({metricUnit})
       </label>
       <input
-        id={metric_id.toString()}
+        id={userMetricId.toString()}
         value={currentValue}
         onChange={handleChange}
       />
