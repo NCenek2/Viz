@@ -80,6 +80,10 @@ export class UsersService {
     await this.userRepository.update(userId, updateUsernameDto);
   }
 
+  async changePassword(user: UserEntity, password: string) {
+    await this.userRepository.update(user, { password });
+  }
+
   async deleteUserById(userId: number) {
     await this.getUserById(userId);
     await this.userRepository.delete(userId);

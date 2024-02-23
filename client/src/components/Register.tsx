@@ -52,29 +52,41 @@ const SignUp = () => {
     e.preventDefault();
     if (!isLastStep) return next();
 
-    if (data.password !== data.password2) {
+    const { password, password2, email, username } = data;
+
+    if (password !== password2) {
       setAlert("Passwords do not match");
       return;
     }
 
-    if (data.password.length < USERS.PASSWORD_MIN) {
+    if (password.length < USERS.PASSWORD_MIN) {
       setAlert(`Password must be at least ${USERS.PASSWORD_MIN} characters`);
       return;
     }
 
-    if (data.password.length > USERS.PASSWORD_MAX) {
+    if (password.length > USERS.PASSWORD_MAX) {
       setAlert(
         `Password length cannot exceed ${USERS.PASSWORD_MAX} characters`
       );
       return;
     }
 
-    if (data.username.trim().length < 1) {
+    if (email.trim().length < 1) {
+      setAlert("Email cannot be empty");
+      return;
+    }
+
+    if (email.length > USERS.EMAIL) {
+      setAlert(`Email is more than ${USERS.EMAIL} characters`);
+      return;
+    }
+
+    if (username.trim().length < 1) {
       setAlert("Username cannot be empty");
       return;
     }
 
-    if (data.username.length > USERS.USERNAME) {
+    if (username.length > USERS.USERNAME) {
       setAlert(`Username is more than ${USERS.USERNAME} characters`);
       return;
     }

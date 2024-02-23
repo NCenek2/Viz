@@ -19,6 +19,7 @@ import AppDataWrapper from "./components/authenticated/AppDataWrapper";
 import Role2Wrapper from "./components/authenticated/role2/Role2Wrapper";
 import ReportsWrapper from "./components/authenticated/role2/Reports/ReportsWrapper";
 import UserReportsWrapper from "./components/authenticated/role2/UserReports/UserWrapper";
+import ResetPassword from "./components/ResetPassword";
 
 function App() {
   return (
@@ -28,6 +29,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/reset" element={<ResetPassword />} />
           <Route element={<RequireAuth />}>
             <Route element={<AppDataWrapper />}>
               <Route path="/reports" element={<UserReportsWrapper />} />

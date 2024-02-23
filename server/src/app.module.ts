@@ -14,6 +14,7 @@ import { MetricCriteriaModule } from './metric-criteria/metric-criteria.module';
 import { AuthModule } from './auth/auth.module';
 import { RegisterModule } from './register/register.module';
 import { LogoutModule } from './logout/logout.module';
+import { ProfileModule } from './profile/profile.module';
 
 @Module({
   imports: [
@@ -34,6 +35,7 @@ import { LogoutModule } from './logout/logout.module';
     AuthModule,
     RegisterModule,
     LogoutModule,
+    ProfileModule,
   ],
   controllers: [AppController],
   providers: [AppService],

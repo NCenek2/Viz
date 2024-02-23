@@ -122,6 +122,12 @@
   }
 }
 
+/* Reset Password Container */
+.reset-links {
+  display: flex;
+  justify-content: center;
+}
+
 /* Register */
 .register-container {
   width: 100%;

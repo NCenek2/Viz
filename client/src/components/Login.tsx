@@ -100,7 +100,7 @@ const Login = () => {
           <Link to="/register" className="btn btn-link text-decoration-none">
             Register
           </Link>
-          <Link to="" className="btn btn-link text-decoration-none">
+          <Link to="/reset" className="btn btn-link text-decoration-none">
             Forgot Password
           </Link>
         </div>
