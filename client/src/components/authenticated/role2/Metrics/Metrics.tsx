@@ -15,9 +15,9 @@ const Metrics = () => {
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { id, value } = e.target;
     if (id === "metricName") {
-      setMetricName((prev) => value);
+      setMetricName((_) => value);
     } else {
-      setMetricUnit((prev) => value);
+      setMetricUnit((_) => value);
     }
   };
 
@@ -36,8 +36,8 @@ const Metrics = () => {
         `Metric unit cannot exceed ${METRICS.metricUnit} characters`
       );
 
-    setMetricName((prevMetricName) => newMetricName);
-    setMetricUnit((prevUnitName) => newMetricUnit);
+    setMetricName((_) => newMetricName);
+    setMetricUnit((_) => newMetricUnit);
     setConfirmMetric(true);
   };
 

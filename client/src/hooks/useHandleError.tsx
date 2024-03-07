@@ -1,5 +1,5 @@
+import useLogoutService from "./services/useLogoutService";
 import { useAlert } from "./useAlert";
-import useLogout from "./useLogout";
 
 type ReturnError = {
   message: string;
@@ -7,7 +7,7 @@ type ReturnError = {
 };
 
 const useHandleError = () => {
-  const logout = useLogout();
+  const { logout } = useLogoutService();
   const { setAlert } = useAlert();
 
   function handleError(err: any): ReturnError {

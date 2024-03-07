@@ -1,43 +1,13 @@
-import { useState } from "react";
-import useAxiosPrivate from "../../../../hooks/useAxiosPrivate";
-import useRole2 from "../../../../hooks/useRole2";
 import { UsersType } from "../../../../contexts/Role2Context";
-import { useAlert } from "../../../../hooks/useAlert";
-import useHandleError from "../../../../hooks/useHandleError";
+import useUserService from "../../../../hooks/services/useUserService";
 
 const AccessItem = ({ userId, email, role }: UsersType) => {
-  const axiosPrivate = useAxiosPrivate();
-  const handleError = useHandleError();
-  const { refreshRole2 } = useRole2();
-  const { setAlert } = useAlert();
-  const [checked, setChecked] = useState(role > 1);
+  const { changeAccess } = useUserService();
+  const isAdmin = role > 1;
 
-  const toggleAdmin = async (isAdmin: boolean) => {
-    const role = isAdmin ? 2 : 1;
-
-    try {
-      await axiosPrivate({
-        url: `/users/access/${userId}`,
-        method: "patch",
-        data: { role },
-      });
-      refreshRole2();
-      if (isAdmin === true) {
-        setAlert(`Admin permissions given to ${email}`, "success");
-      } else {
-        setAlert(`Removed permissions from ${email}`, "success");
-      }
-      setChecked(isAdmin === true);
-    } catch (err) {
-      handleError(err);
-    }
+  const toggleAdmin = async () => {
+    changeAccess(!isAdmin, userId, email);
   };
-
-  const handleChecked = () => {
-    let isAdmin = !checked;
-    toggleAdmin(isAdmin);
-  };
-
   return (
     <div className="access-items">
       <div>
@@ -45,8 +15,8 @@ const AccessItem = ({ userId, email, role }: UsersType) => {
           type="checkbox"
           className="form-check-input my-check"
           id={userId.toString()}
-          checked={checked}
-          onChange={handleChecked}
+          checked={isAdmin}
+          onChange={toggleAdmin}
         />
       </div>
       <div>

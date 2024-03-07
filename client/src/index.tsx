@@ -1,14 +1,9 @@
-import React from "react";
 import ReactDOM from "react-dom/client";
 import "bootstrap/dist/css/bootstrap.css";
-// import "bootstrap/dist/js/bootstrap.min";
 import "bootstrap/dist/js/bootstrap.bundle.min";
-import "./index.css";
-import App from "./App";
 import reportWebVitals from "./reportWebVitals";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
-import { AuthProvider } from "./contexts/AuthContext";
-import { AlertProvider } from "./contexts/AlertContext";
+import { BrowserRouter } from "react-router-dom";
+import VizIndex from "./VizIndex";
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
@@ -16,13 +11,7 @@ const root = ReactDOM.createRoot(
 
 root.render(
   <BrowserRouter>
-    <AlertProvider>
-      <AuthProvider>
-        <Routes>
-          <Route path="/*" element={<App />} />
-        </Routes>
-      </AuthProvider>
-    </AlertProvider>
+    <VizIndex />
   </BrowserRouter>
 );
 

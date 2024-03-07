@@ -1,6 +1,6 @@
 import { ReactNode, createContext, useEffect, useState } from "react";
-import useAxiosPrivate from "../hooks/useAxiosPrivate";
-import useHandleError from "../hooks/useHandleError";
+import useMetricService from "../hooks/services/useMetricService";
+import useUserService from "../hooks/services/useUserService";
 
 export type UsersType = {
   userId: number;
@@ -25,27 +25,16 @@ const initialRole2State: Role2State = {
 };
 
 const useRole2Context = (initRole2State: Role2State) => {
-  const axiosPrivate = useAxiosPrivate();
-  const handleError = useHandleError();
   const [users, setUsers] = useState(initRole2State.users);
   const [metrics, setMetrics] = useState(initRole2State.metrics);
+  const { getUsers } = useUserService();
+  const { getMetrics } = useMetricService();
 
   async function refreshRole2() {
-    try {
-      const usersResponse = await axiosPrivate("/users/access");
-      let usersData: UsersType[] = usersResponse.data;
-      usersData.sort((userA, userB) => userA.userId - userB.userId);
-
-      const metricsResponse = await axiosPrivate.get("/metrics");
-      let metricsData: MetricsType[] = metricsResponse.data;
-      metricsData.sort(
-        (metricA, metricB) => metricA.metricId - metricB.metricId
-      );
-      setUsers(usersData);
-      setMetrics(metricsData);
-    } catch (err) {
-      handleError(err);
-    }
+    const usersData = await getUsers();
+    setUsers(usersData);
+    const metricsData = await getMetrics();
+    setMetrics(metricsData);
   }
 
   useEffect(() => {

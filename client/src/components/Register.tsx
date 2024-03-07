@@ -1,17 +1,15 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { useMultistepForm } from "../hooks/useMultistepForm";
 import { EmailForm } from "./signin_forms/EmailForm";
 import { PasswordForm } from "./signin_forms/PasswordForm";
 import { Password2Form } from "./signin_forms/Password2Form";
-import axios from "../api/axios";
 import { UsernameForm } from "./signin_forms/UsernameForm";
 import { useAlert } from "../hooks/useAlert";
 import { USERS } from "../constants/constants";
-import useHandleError from "../hooks/useHandleError";
 import { CompanyKeyForm } from "./signin_forms/CompanyKey";
+import useUserService from "../hooks/services/useUserService";
 
-type FormData = {
+export type FormData = {
   email: string;
   username: string;
   password: string;
@@ -28,10 +26,9 @@ const INITIAL_DATA: FormData = {
 };
 
 const SignUp = () => {
-  const handleError = useHandleError();
-  const { setAlert, hideAlert } = useAlert();
-  const navigate = useNavigate();
+  const { setAlert } = useAlert();
   const [data, setData] = useState(INITIAL_DATA);
+  const { register } = useUserService();
 
   function updateFields(fields: Partial<FormData>) {
     setData((prev) => {
@@ -48,7 +45,7 @@ const SignUp = () => {
       <CompanyKeyForm {...data} updateFields={updateFields} />,
     ]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!isLastStep) return next();
 
@@ -91,25 +88,7 @@ const SignUp = () => {
       return;
     }
 
-    hideAlert();
-    register();
-  };
-
-  const register = async (): Promise<any> => {
-    try {
-      const result = await axios({
-        url: "/register",
-        method: "post",
-        data,
-      });
-
-      if (result?.status === 201) {
-        setAlert("Account Created", "success");
-        navigate("/login");
-      }
-    } catch (err) {
-      handleError(err);
-    }
+    register(data);
   };
 
   return (

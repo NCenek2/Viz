@@ -1,11 +1,7 @@
 import { useEffect, useState } from "react";
-import useAxiosPrivate from "../../../../hooks/useAxiosPrivate";
-import useDashboard from "../../../../hooks/useDashboard";
-import useAuth from "../../../../hooks/useAuth";
-import { useAlert } from "../../../../hooks/useAlert";
-import useHandleError from "../../../../hooks/useHandleError";
+import useReportService from "../../../../hooks/services/useReportService";
 
-type UserReportType = {
+export type UserReportType = {
   reportId: number;
   report: string;
   cycleId: number;
@@ -14,52 +10,22 @@ type UserReportType = {
 };
 
 const UserReport = () => {
-  const axiosPrivate = useAxiosPrivate();
-  const { auth } = useAuth();
-  const handleError = useHandleError();
-  const { setAlert } = useAlert();
   const [report, setReport] = useState<UserReportType | null>(null);
-  const { selectedCycle } = useDashboard();
+  const { getUserReport, acknowledgeReport } = useReportService();
 
-  async function getReport() {
-    if (!auth) return;
-    if (!auth?.userInfo?.userId) return;
-    try {
-      const response = await axiosPrivate.get(`/reports`, {
-        params: { cycleId: selectedCycle, userId: auth.userInfo.userId },
-      });
-
-      const userReportData: UserReportType[] = response.data;
-      if (userReportData.length) {
-        setReport(userReportData[0]);
-      }
-    } catch (err) {
-      handleError(err);
-    }
-  }
+  const handleReport = async () => {
+    const userReport = await getUserReport();
+    setReport(userReport);
+  };
 
   useEffect(() => {
-    getReport();
+    handleReport();
   }, []);
 
-  async function acknowledgeReport() {
-    if (!report) return;
-    const { reportId } = report;
-    let { userId } = auth?.userInfo ?? { userId: 0 };
-    userId = parseInt(userId as unknown as string);
-    try {
-      await axiosPrivate({
-        url: `/reports/acknowledge/${reportId}`,
-        method: "patch",
-        data: { userId },
-      });
-
-      getReport();
-      setAlert("Report Acknowledged", "success");
-    } catch (err) {
-      handleError(err);
-    }
-  }
+  const handleAcknowledge = async () => {
+    acknowledgeReport(report);
+    handleReport();
+  };
 
   return (
     <>
@@ -83,7 +49,7 @@ const UserReport = () => {
           {report.acknowledged === false && (
             <button
               className="btn btn-outline-light"
-              onClick={acknowledgeReport}
+              onClick={handleAcknowledge}
             >
               Acknowledge
             </button>

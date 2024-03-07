@@ -1,8 +1,8 @@
 import useDashboardResults from "../../../../hooks/useDashboardResults";
 import DashboardResultsItem from "./DashboardResultsItem";
 import { DashboardResultsType } from "../../../../contexts/DashboardResultsContext";
-import useUpdateDashboardResults from "../../../../hooks/useUpdateDashboardResults";
 import { useAlert } from "../../../../hooks/useAlert";
+import useUserMetricService from "../../../../hooks/services/useUserMetricService";
 
 const Main = () => {
   const {
@@ -12,7 +12,7 @@ const Main = () => {
     updatedSet,
     setUpdatedSet,
   } = useDashboardResults();
-  const update = useUpdateDashboardResults();
+  const { updateDashboardUserMetrics } = useUserMetricService();
 
   const { setAlert, hideAlert } = useAlert();
 
@@ -37,7 +37,7 @@ const Main = () => {
     return false;
   };
 
-  const handleUpdate = () => {
+  const handleUpdate = async () => {
     if (notFloats()) return;
 
     let updated: DashboardResultsType[] = [];
@@ -48,10 +48,9 @@ const Main = () => {
       }
     }
 
-    update({ updated });
+    await updateDashboardUserMetrics({ updated });
     setMadeChanges(false);
     setUpdatedSet(new Set<number>());
-    hideAlert();
   };
 
   return (

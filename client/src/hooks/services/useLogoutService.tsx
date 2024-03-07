@@ -1,7 +1,7 @@
-import axios from "../api/axios";
-import useAuth from "./useAuth";
+import axios from "../../api/axios";
+import useAuth from "../useAuth";
 
-const useLogout = () => {
+const useLogoutService = () => {
   const { setAuth } = useAuth();
 
   async function logout() {
@@ -13,7 +13,7 @@ const useLogout = () => {
     }
   }
 
-  return logout;
+  return { logout };
 };
 
-export default useLogout;
+export default useLogoutService;

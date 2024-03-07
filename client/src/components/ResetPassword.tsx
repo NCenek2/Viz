@@ -1,14 +1,10 @@
 import { useState } from "react";
 import { useAlert } from "../hooks/useAlert";
-import useAuth from "../hooks/useAuth";
-import useHandleError from "../hooks/useHandleError";
-import { useLocation, useNavigate } from "react-router";
-import axios from "../api/axios";
-import { AuthState } from "../contexts/AuthContext";
 import { Link } from "react-router-dom";
-import { USERS } from "../constants/constants";
+import { ROUTE_PREFIX, USERS } from "../constants/constants";
+import useUserService from "../hooks/services/useUserService";
 
-type ResetInfo = {
+export type ResetInfo = {
   username: string;
   email: string;
   password: string;
@@ -23,15 +19,10 @@ const RESET_DATA: ResetInfo = {
 };
 
 const ResetPassword = () => {
-  const { setAuth } = useAuth();
-  const handleError = useHandleError();
-  const { hideAlert, setAlert } = useAlert();
+  const { setAlert } = useAlert();
+  const { resetPassword } = useUserService();
 
   const [resetInfo, setResetInfo] = useState<ResetInfo>(RESET_DATA);
-
-  const navigate = useNavigate();
-  const location = useLocation();
-  const from = location?.state?.from?.pathname || "/login";
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { id, value } = e.target;
@@ -44,7 +35,7 @@ const ResetPassword = () => {
     });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     const { password, password2, username, email } = resetInfo;
@@ -86,26 +77,9 @@ const ResetPassword = () => {
       return;
     }
 
-    hideAlert();
-    resetPassword();
+    resetPassword(resetInfo);
   };
 
-  const resetPassword = async () => {
-    try {
-      const response = await axios({
-        url: "/profile/reset-password",
-        method: "post",
-        data: resetInfo,
-      });
-
-      if (response?.status === 204) {
-        setAlert("Password Reset", "success");
-        navigate(from);
-      }
-    } catch (err) {
-      handleError(err);
-    }
-  };
   return (
     <>
       <div className="center-fixed-container login-container">
@@ -133,7 +107,7 @@ const ResetPassword = () => {
             onChange={handleChange}
           />
           <label htmlFor="password" className="form-group">
-            Password - ({resetInfo.password.length}/{USERS.PASSWORD_MAX})
+            New Password - ({resetInfo.password.length}/{USERS.PASSWORD_MAX})
           </label>
           <input
             placeholder="Password"
@@ -172,10 +146,16 @@ const ResetPassword = () => {
           </button>
         </form>
         <div className="reset-links">
-          <Link to="/login" className="btn btn-link text-decoration-none">
+          <Link
+            to={`${ROUTE_PREFIX}/login`}
+            className="btn btn-link text-decoration-none"
+          >
             Login
           </Link>
-          <Link to="/register" className="btn btn-link text-decoration-none">
+          <Link
+            to={`${ROUTE_PREFIX}/register`}
+            className="btn btn-link text-decoration-none"
+          >
             Register
           </Link>
         </div>

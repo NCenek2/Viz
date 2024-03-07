@@ -1,5 +1,5 @@
+import useMetricService from "../../../../hooks/services/useMetricService";
 import { useAlert } from "../../../../hooks/useAlert";
-import { useMetric } from "../../../../hooks/useMetric";
 
 type MetricsConfirmProps = {
   metricName: string;
@@ -16,13 +16,14 @@ const MetricsConfirm = ({
   setMetricUnit,
   setConfirmMetric,
 }: MetricsConfirmProps) => {
-  const { addMetric } = useMetric();
+  const { createMetric } = useMetricService();
   const { setAlert } = useAlert();
-  const handleAdd = () => {
+
+  const handleAdd = async () => {
     if (!metricName) return setAlert("Metric name cannot be empty");
     if (!metricUnit) return setAlert("Metric unit cannot be empty");
 
-    addMetric(metricName, metricUnit);
+    createMetric(metricName, metricUnit);
     setMetricName("");
     setMetricUnit("");
     setConfirmMetric(false);

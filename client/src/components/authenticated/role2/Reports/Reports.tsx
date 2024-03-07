@@ -1,11 +1,9 @@
 import { ChangeEvent, useState } from "react";
-import useAxiosPrivate from "../../../../hooks/useAxiosPrivate";
 import useDashboard from "../../../../hooks/useDashboard";
-import { useAlert } from "../../../../hooks/useAlert";
 import useRole1 from "../../../../hooks/useRole1";
 import useRole2 from "../../../../hooks/useRole2";
 import Report from "./Report";
-import useHandleError from "../../../../hooks/useHandleError";
+import useUserMetricService from "../../../../hooks/services/useUserMetricService";
 
 type FilteredCycle = {
   cycleId: number;
@@ -13,49 +11,18 @@ type FilteredCycle = {
 };
 
 const Reports = () => {
-  const axiosPrivate = useAxiosPrivate();
-  const { setAlert } = useAlert();
-  const handleError = useHandleError();
   const { cycles } = useRole1();
   const { users } = useRole2();
   const { selectedCycle, setSelectedCycle, selectedUser, setSelectedUser } =
     useDashboard();
   const [search, setSearch] = useState(false);
-  const [filteredCycles, setFilteredCycles] = useState<FilteredCycle[] | null>(
-    []
-  );
+  const { getUserCycles } = useUserMetricService();
+  const [filteredCycles, setFilteredCycles] = useState<FilteredCycle[]>([]);
 
   async function updateCycles(userId: number) {
-    if (!userId) return;
-    try {
-      const userCyclesDataResponse = await axiosPrivate.get(
-        `/user_metrics/user_cycles/${userId}`
-      );
-
-      let userCyclesData: FilteredCycle[] = userCyclesDataResponse.data;
-      userCyclesData.sort((cycleA, cycleB) => {
-        return (
-          new Date(cycleB.startDate).getTime() -
-          new Date(cycleA.startDate).getTime()
-        );
-      });
-
-      userCyclesData = userCyclesData.map((cycle) => {
-        return {
-          ...cycle,
-          startDate: new Date(cycle.startDate).toDateString(),
-        };
-      });
-
-      if (!userCyclesData.length) {
-        setFilteredCycles(null);
-        return setAlert("User is not in any cycles", "warning");
-      }
-
-      return setFilteredCycles(userCyclesData);
-    } catch (err) {
-      handleError(err);
-    }
+    const userCyclesData = await getUserCycles(userId);
+    if (!userCyclesData.length) return;
+    setFilteredCycles(userCyclesData);
   }
 
   function reset(): boolean {
@@ -68,9 +35,7 @@ const Reports = () => {
   const checkFilters = (userId: number, cycleId: number) => {
     setSearch(false);
 
-    if (userId === 0 && cycleId === 0) {
-      return reset();
-    }
+    if (userId === 0 && cycleId === 0) return reset();
     return false;
   };
 

@@ -13,3 +13,5 @@ export const USERS = {
 export const REPORTS = {
   report: 350,
 };
+
+export const ROUTE_PREFIX = "";

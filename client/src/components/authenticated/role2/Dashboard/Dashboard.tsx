@@ -2,77 +2,36 @@ import useDashboard from "../../../../hooks/useDashboard";
 import { ChangeEvent, useState } from "react";
 import DashboardResultsWrapper from "./DashboardResultsWrapper";
 import useRole2 from "../../../../hooks/useRole2";
-import useAxiosPrivate from "../../../../hooks/useAxiosPrivate";
-import { useAlert } from "../../../../hooks/useAlert";
 import useRole1 from "../../../../hooks/useRole1";
-import useHandleError from "../../../../hooks/useHandleError";
 import { CycleType } from "../../../../contexts/Role1Context";
+import useUserMetricService from "../../../../hooks/services/useUserMetricService";
 
-type FilteredUser = {
+export type FilteredUser = {
   userId: number;
   email: string;
 };
 
 const Dashboard = () => {
-  const axiosPrivate = useAxiosPrivate();
-  const handleError = useHandleError();
   const { cycles } = useRole1();
   const { users } = useRole2();
-  const { setAlert } = useAlert();
   const { selectedCycle, setSelectedCycle, selectedUser, setSelectedUser } =
     useDashboard();
   const [search, setSearch] = useState(false);
+  const { getCycleUsers, getUserCycles } = useUserMetricService();
 
   const [filteredUsers, setFilteredUsers] = useState<FilteredUser[]>([]);
   const [filteredCycles, setFilteredCycles] = useState<CycleType[]>([]);
 
   async function updateUsers(cycleId: number) {
-    try {
-      const cycleUsersResponse = await axiosPrivate.get(
-        `/user_metrics/cycle_users/${cycleId}`
-      );
-      let cycleUsersData: FilteredUser[] = cycleUsersResponse.data;
-      cycleUsersData.sort((userA, userB) => userA.userId - userB.userId);
-      if (!cycleUsersData.length) {
-        reset();
-        return setAlert("Cycle doesn't have any users", "warning");
-      }
-      return setFilteredUsers(cycleUsersData);
-    } catch (err) {
-      handleError(err);
-    }
+    const cycleUsersData = await getCycleUsers(cycleId);
+    if (!cycleUsersData.length) return reset();
+    setFilteredUsers(cycleUsersData);
   }
 
   async function updateCycles(userId: number) {
-    try {
-      const userCyclesDataResponse = await axiosPrivate.get(
-        `/user_metrics/user_cycles/${userId}`
-      );
-
-      let userCyclesData: CycleType[] = userCyclesDataResponse.data;
-      userCyclesData.sort((cycleA, cycleB) => {
-        return (
-          new Date(cycleB.startDate).getTime() -
-          new Date(cycleA.startDate).getTime()
-        );
-      });
-
-      userCyclesData = userCyclesData.map((cycle) => {
-        return {
-          ...cycle,
-          startDate: new Date(cycle.startDate).toDateString(),
-        };
-      });
-
-      if (!userCyclesData.length) {
-        reset();
-        return setAlert("User is not in any cycles", "warning");
-      }
-
-      return setFilteredCycles(userCyclesData);
-    } catch (err) {
-      handleError(err);
-    }
+    const userCyclesData = await getUserCycles(userId);
+    if (!userCyclesData.length) return reset();
+    return setFilteredCycles(userCyclesData);
   }
 
   function reset(): boolean {

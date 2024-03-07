@@ -1,45 +1,14 @@
 import { ChangeEvent, useEffect, useState } from "react";
-import useAxiosPrivate from "../../../../hooks/useAxiosPrivate";
-import useAuth from "../../../../hooks/useAuth";
 import useDashboard from "../../../../hooks/useDashboard";
 import UserReport from "./UserReport";
 import { CycleType } from "../../../../contexts/Role1Context";
-import useHandleError from "../../../../hooks/useHandleError";
+import useReportService from "../../../../hooks/services/useReportService";
 
 const UserReports = () => {
-  const axiosPrivate = useAxiosPrivate();
-  const handleError = useHandleError();
-  const { auth } = useAuth();
   const { selectedCycle, setSelectedCycle } = useDashboard();
   const [filteredCycles, setFilteredCycles] = useState<CycleType[]>([]);
   const [showReport, setShowReport] = useState(false);
-
-  async function getCycles() {
-    if (!auth?.userInfo?.userId) return;
-    try {
-      const cyclesResponse = await axiosPrivate.get(
-        `/reports/user/${auth.userInfo.userId}`
-      );
-
-      let cyclesData: CycleType[] = cyclesResponse.data;
-      cyclesData.sort((cycleA, cycleB) => {
-        return (
-          new Date(cycleB.startDate).getTime() -
-          new Date(cycleA.startDate).getTime()
-        );
-      });
-
-      cyclesData = cyclesData.map((cycle) => {
-        return {
-          ...cycle,
-          startDate: new Date(cycle.startDate).toDateString(),
-        };
-      });
-      setFilteredCycles(cyclesData);
-    } catch (err) {
-      handleError(err);
-    }
-  }
+  const { getUserReportCycles } = useReportService();
 
   const getReport = () => {
     if (!selectedCycle) return;
@@ -55,7 +24,11 @@ const UserReports = () => {
   };
 
   useEffect(() => {
-    getCycles();
+    const handleUserCycleReports = async () => {
+      const userReportCycles = await getUserReportCycles();
+      setFilteredCycles(userReportCycles);
+    };
+    handleUserCycleReports();
   }, []);
 
   return (

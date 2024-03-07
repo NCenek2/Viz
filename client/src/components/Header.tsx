@@ -1,11 +1,12 @@
 import { Link } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
-import useLogout from "../hooks/useLogout";
+import { ROUTE_PREFIX } from "../constants/constants";
+import useLogoutService from "../hooks/services/useLogoutService";
 
 const Header = () => {
   const { auth } = useAuth();
-  const logout = useLogout();
   const role = auth?.userInfo?.role ?? 0;
+  const { logout } = useLogoutService();
 
   const logButton = (
     <li className="nav-item">
@@ -13,15 +14,15 @@ const Header = () => {
         <button
           className="nav-link"
           data-bs-dismiss="offcanvas"
-          onClick={() => logout()}
+          onClick={logout}
         >
-          <Link className="nav-link text-white" to="/login">
+          <Link className="nav-link text-white" to={`${ROUTE_PREFIX}/login`}>
             Log Out
           </Link>
         </button>
       ) : (
         <button className="nav-link" data-bs-dismiss="offcanvas">
-          <Link className="nav-link text-white" to="/login">
+          <Link className="nav-link text-white" to={`${ROUTE_PREFIX}/login`}>
             Login
           </Link>
         </button>
@@ -33,14 +34,14 @@ const Header = () => {
     <>
       <li className="nav-item">
         <button className="nav-link" data-bs-dismiss="offcanvas">
-          <Link className="nav-link text-white" to="/rankings">
+          <Link className="nav-link text-white" to={`${ROUTE_PREFIX}/rankings`}>
             Rankings
           </Link>
         </button>
       </li>
       <li className="nav-item">
         <button className="nav-link" data-bs-dismiss="offcanvas">
-          <Link className="nav-link text-white" to="/reports">
+          <Link className="nav-link text-white" to={`${ROUTE_PREFIX}/reports`}>
             View Reports
           </Link>
         </button>
@@ -55,7 +56,7 @@ const Header = () => {
           <Link
             className="nav-link white-smoke"
             aria-current="page"
-            to="/r2/dashboard"
+            to={`${ROUTE_PREFIX}/r2/dashboard`}
           >
             Dashboard
           </Link>
@@ -66,7 +67,7 @@ const Header = () => {
           <Link
             className="nav-link white-smoke"
             aria-current="page"
-            to="/r2/reports"
+            to={`${ROUTE_PREFIX}/r2/reports`}
           >
             Write Reports
           </Link>
@@ -77,7 +78,7 @@ const Header = () => {
           <Link
             className="nav-link white-smoke"
             aria-current="page"
-            to="/r2/createcycle"
+            to={`${ROUTE_PREFIX}/r2/createcycle`}
           >
             Create Cycle
           </Link>
@@ -88,7 +89,7 @@ const Header = () => {
           <Link
             className="nav-link white-smoke"
             aria-current="page"
-            to="/r2/changecycle"
+            to={`${ROUTE_PREFIX}/r2/changecycle`}
           >
             Change Cycle
           </Link>
@@ -99,7 +100,7 @@ const Header = () => {
           <Link
             className="nav-link white-smoke"
             aria-current="page"
-            to="/r2/metrics"
+            to={`${ROUTE_PREFIX}/r2/metrics`}
           >
             Metrics
           </Link>
@@ -110,7 +111,7 @@ const Header = () => {
           <Link
             className="nav-link white-smoke"
             aria-current="page"
-            to="/r2/access"
+            to={`${ROUTE_PREFIX}/r2/access`}
           >
             Access
           </Link>
@@ -122,7 +123,7 @@ const Header = () => {
   return (
     <nav className="navbar navbar-dark header-color sticky-top">
       <div className="container-fluid">
-        <Link className="navbar-brand" to="/">
+        <Link className="navbar-brand" to={`${ROUTE_PREFIX}/`}>
           Viz
         </Link>
         <button
@@ -159,7 +160,7 @@ const Header = () => {
                   <Link
                     className="nav-link white-smoke"
                     aria-current="page"
-                    to="/"
+                    to={`${ROUTE_PREFIX}/`}
                   >
                     Home
                   </Link>

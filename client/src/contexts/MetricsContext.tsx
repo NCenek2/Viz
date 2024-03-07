@@ -1,9 +1,5 @@
 import { ReactNode, createContext } from "react";
 import { MetricsType } from "./Role2Context";
-import useRole2 from "../hooks/useRole2";
-import useAxiosPrivate from "../hooks/useAxiosPrivate";
-import { useAlert } from "../hooks/useAlert";
-import useHandleError from "../hooks/useHandleError";
 
 const METRICS_ACTION_TYPE = {
   ADD_METRIC: "ADD_METRIC",
@@ -27,27 +23,7 @@ const initialMetricsState: MetricsState = {
 };
 
 const useMetricsContext = (initMetricsState: MetricsState) => {
-  const axiosPrivate = useAxiosPrivate();
-  const handleError = useHandleError();
-  const { setAlert } = useAlert();
-  const { refreshRole2 } = useRole2();
-
-  async function addMetric(metricName: string, metricUnit: string) {
-    try {
-      await axiosPrivate({
-        url: "/metrics",
-        method: "post",
-        data: { metricName, metricUnit },
-      });
-
-      refreshRole2();
-      setAlert("New Metric Created!", "success");
-    } catch (err) {
-      handleError(err);
-    }
-  }
-
-  return { addMetric };
+  return {};
 };
 
 export type UseMetricsContext = ReturnType<typeof useMetricsContext>;

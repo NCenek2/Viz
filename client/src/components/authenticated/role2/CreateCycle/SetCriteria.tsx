@@ -10,7 +10,7 @@ type SetCriteriaProps = {
 const SetCriteria = ({ setSettingCriteria }: SetCriteriaProps) => {
   const { state } = useCreateCycle();
   const { setAlert } = useAlert();
-  const create = useCreateCycleMetrics();
+  const createCycleData = useCreateCycleMetrics();
 
   const handleBack = () => {
     setSettingCriteria(false);
@@ -25,7 +25,7 @@ const SetCriteria = ({ setSettingCriteria }: SetCriteriaProps) => {
     }
   }
 
-  const handleCreate = () => {
+  const handleCreate = async () => {
     const total = state.criteria.reduce((total, criteria) => {
       return criteria.weight + total;
     }, 0);
@@ -43,7 +43,7 @@ const SetCriteria = ({ setSettingCriteria }: SetCriteriaProps) => {
       return setAlert("Metric thresholds should be greater than 0");
     }
 
-    create();
+    createCycleData();
   };
 
   return (

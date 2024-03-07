@@ -2,11 +2,13 @@ import { ChangeEvent } from "react";
 import useDashboard from "../../../../hooks/useDashboard";
 import useChangeCycle from "../../../../hooks/useChangeCycle";
 import useRole1 from "../../../../hooks/useRole1";
+import useCurrentCycleService from "../../../../hooks/services/useCurrentCycleService";
 
 const ChangeCurrentCycle = () => {
   const { cycles } = useRole1();
   const { setSelectedCycle } = useDashboard();
-  const { current_date, changeCycle } = useChangeCycle();
+  const { current_date } = useChangeCycle();
+  const { changeCurrentCycle } = useCurrentCycleService();
 
   const handleCycle = (e: ChangeEvent<HTMLSelectElement>) => {
     const { value } = e.target;
@@ -35,7 +37,7 @@ const ChangeCurrentCycle = () => {
             );
           })}
         </select>
-        <button className="btn btn-outline-light" onClick={changeCycle}>
+        <button className="btn btn-outline-light" onClick={changeCurrentCycle}>
           Change
         </button>
       </div>

@@ -1,8 +1,6 @@
 import { useState, createContext, ReactNode, useEffect } from "react";
-import { axiosPrivate } from "../api/axios";
 import useAuth from "../hooks/useAuth";
-import useRole1 from "../hooks/useRole1";
-import useHandleError from "../hooks/useHandleError";
+import useUserMetricService from "../hooks/services/useUserMetricService";
 
 export type DashboardResultsType = {
   userMetricId: number;
@@ -17,11 +15,10 @@ export type DashboardResultsType = {
 
 const useDashboardResultsContext = (userId = 0, cycleId = 0) => {
   const { auth } = useAuth();
-  const handleError = useHandleError();
-  const { currentCycle } = useRole1();
   const [dashboardResults, setDashboardResults] = useState<
     DashboardResultsType[]
   >([]);
+  const { getCycleUserMetrics } = useUserMetricService();
   const [madeChanges, setMadeChanges] = useState<boolean>(false);
   const [updatedSet, setUpdatedSet] = useState(new Set<number>());
 
@@ -30,26 +27,8 @@ const useDashboardResultsContext = (userId = 0, cycleId = 0) => {
   }
 
   async function refreshDashboard() {
-    try {
-      if (cycleId === 0) {
-        if (currentCycle?.cycleId) {
-          cycleId = currentCycle.cycleId ?? cycleId;
-        }
-      }
-
-      const userCycleMetricsResponse = await axiosPrivate(
-        `/user_metrics?userId=${userId}&cycleId=${cycleId}`
-      );
-      let userCycleMetricsData: DashboardResultsType[] =
-        userCycleMetricsResponse.data;
-      userCycleMetricsData.sort(
-        (metricA, metricsB) => metricA.metricId - metricsB.metricId
-      );
-
-      setDashboardResults(userCycleMetricsData);
-    } catch (err) {
-      handleError(err);
-    }
+    const userCycleMetricsData = await getCycleUserMetrics(userId, cycleId);
+    setDashboardResults(userCycleMetricsData);
   }
 
   useEffect(() => {

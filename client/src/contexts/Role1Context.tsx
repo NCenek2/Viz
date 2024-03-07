@@ -1,6 +1,7 @@
 import { ReactNode, createContext, useEffect, useState } from "react";
-import useAxiosPrivate from "../hooks/useAxiosPrivate";
 import useHandleError from "../hooks/useHandleError";
+import useCycleService from "../hooks/services/useCycleService";
+import useCurrentCycleService from "../hooks/services/useCurrentCycleService";
 
 export type CurrentCycleType = {
   cycleId: number;
@@ -23,33 +24,17 @@ const initialRole1State: Role1State = {
 };
 
 const useRole1Context = (initRole1State: Role1State) => {
-  const axiosPrivate = useAxiosPrivate();
   const handleError = useHandleError();
   const [cycles, setCycles] = useState(initRole1State.cycles);
   const [currentCycle, setCurrentCycle] = useState(initRole1State.currentCycle);
+  const { getCycles } = useCycleService();
+  const { getCurrentCycle } = useCurrentCycleService();
 
   async function refreshRole1() {
     try {
-      const cyclesResponse = await axiosPrivate("/cycles");
-      let cyclesData: CycleType[] = cyclesResponse.data;
-      cyclesData.sort((cycleA, cycleB) => {
-        return (
-          new Date(cycleB.startDate).getTime() -
-          new Date(cycleA.startDate).getTime()
-        );
-      });
-
-      cyclesData = cyclesData.map((cycle) => {
-        return {
-          ...cycle,
-          startDate: new Date(cycle.startDate).toDateString(),
-        };
-      });
-
-      const currentCycleResponse = await axiosPrivate.get("current_cycles");
-      const currentCycle: CurrentCycleType = currentCycleResponse.data;
-
+      const cyclesData = await getCycles();
       setCycles(cyclesData);
+      const currentCycle: CurrentCycleType = await getCurrentCycle();
       setCurrentCycle({
         ...currentCycle,
         startDate: new Date(currentCycle.startDate).toDateString(),

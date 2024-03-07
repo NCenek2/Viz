@@ -1,75 +1,17 @@
 import { useEffect, useState } from "react";
-import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
-import useRole1 from "../../../hooks/useRole1";
-import { CurrentCycleType } from "../../../contexts/Role1Context";
-import useHandleError from "../../../hooks/useHandleError";
-
-type RankingData = {
-  email: string;
-  startDate: string;
-  value: number;
-  weight: number;
-  threshold: number;
-};
-
-type Ranking = {
-  email: string;
-  score: number;
-};
-
-type RankingObj = {
-  [key: string]: Ranking;
-};
+import useUserMetricService, { Ranking } from "../../../hooks/services/useUserMetricService";
 
 const Rankings = () => {
-  const axiosPrivate = useAxiosPrivate();
-  const handleError = useHandleError();
-  const { currentCycle } = useRole1();
   const [rankings, setRankings] = useState<Ranking[]>([]);
+  const { getRankings } = useUserMetricService();
 
   useEffect(() => {
-    async function getRankings() {
-      try {
-        const { cycleId } = currentCycle;
-        let currentCycleId: number = cycleId;
+    const handleRanking = async () => {
+      const rnkings: Ranking[] = await getRankings();
+      setRankings(rnkings);
+    };
 
-        if (!currentCycleId) {
-          const response = await axiosPrivate.get("current_cycles");
-          const currentCycle: CurrentCycleType = response.data;
-          if (!currentCycle?.cycleId) return;
-          currentCycleId = currentCycle.cycleId;
-        }
-
-        const response = await axiosPrivate.get(
-          `/user_metrics/rankings/${currentCycleId}`
-        );
-        const rankingData: RankingData[] = response.data;
-
-        let rankingObj: RankingObj = {};
-        for (let data of rankingData) {
-          const { email, value, weight, threshold } = data;
-
-          if (!(email in rankingObj)) {
-            rankingObj[email] = {
-              email,
-              score: 0,
-            };
-          }
-          let currentSum = (value / threshold) * weight;
-          rankingObj[email].score += currentSum;
-        }
-
-        const sortedRanks = Object.values(rankingObj).sort(
-          (rankingA, rankingB) => rankingB.score - rankingA.score
-        );
-
-        setRankings(sortedRanks);
-      } catch (err) {
-        handleError(err);
-      }
-    }
-
-    getRankings();
+    handleRanking();
   }, []);
 
   return (

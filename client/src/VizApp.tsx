@@ -1,4 +1,4 @@
-import "./App.css";
+import "./VizInit.css";
 import "./Viz.css";
 import { Route, Routes } from "react-router";
 import Layout from "./components/Layout";
@@ -21,7 +21,7 @@ import ReportsWrapper from "./components/authenticated/role2/Reports/ReportsWrap
 import UserReportsWrapper from "./components/authenticated/role2/UserReports/UserWrapper";
 import ResetPassword from "./components/ResetPassword";
 
-function App() {
+function VizApp() {
   return (
     <>
       <Routes>
@@ -60,4 +60,4 @@ function App() {
   );
 }
 
-export default App;
+export default VizApp;

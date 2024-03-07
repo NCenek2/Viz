@@ -1,5 +1,6 @@
 import { Navigate, Outlet } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
+import { ROUTE_PREFIX } from "../constants/constants";
 
 type RequireRoleProps = {
   roleLimit: number;
@@ -12,7 +13,7 @@ const RequireRole = ({ roleLimit }: RequireRoleProps) => {
   return role >= roleLimit ? (
     <Outlet />
   ) : (
-    <Navigate to="/unauthorized" replace />
+    <Navigate to={`${ROUTE_PREFIX}/unauthorized`} replace />
   );
 };
 

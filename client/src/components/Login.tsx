@@ -1,12 +1,9 @@
 import React, { useState } from "react";
-import { Link, useNavigate, useLocation } from "react-router-dom";
-import axios from "../api/axios";
-import useAuth from "../hooks/useAuth";
-import { useAlert } from "../hooks/useAlert";
-import { AuthState } from "../contexts/AuthContext";
-import useHandleError from "../hooks/useHandleError";
+import { Link } from "react-router-dom";
+import { ROUTE_PREFIX } from "../constants/constants";
+import useAuthService from "../hooks/services/useAuthService";
 
-type LoginInfo = {
+export type LoginInfo = {
   email: string;
   password: string;
 };
@@ -17,15 +14,8 @@ const LOGIN_DATA: LoginInfo = {
 };
 
 const Login = () => {
-  const { setAuth } = useAuth();
-  const handleError = useHandleError();
-  const { hideAlert } = useAlert();
-
   const [loginInfo, setLoginInfo] = useState<LoginInfo>(LOGIN_DATA);
-
-  const navigate = useNavigate();
-  const location = useLocation();
-  const from = location?.state?.from?.pathname || "/rankings";
+  const { login } = useAuthService();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { id, value } = e.target;
@@ -38,29 +28,9 @@ const Login = () => {
     });
   };
 
-  const handleSubmit = async (e: React.ChangeEvent<HTMLFormElement>) => {
+  const handleSubmit = (e: React.ChangeEvent<HTMLFormElement>) => {
     e.preventDefault();
-    login();
-  };
-
-  const login = async () => {
-    try {
-      const response = await axios({
-        url: "/auth/login",
-        method: "post",
-        data: loginInfo,
-      });
-
-      const authData: AuthState = response.data;
-
-      if (response?.status === 200) {
-        hideAlert();
-        setAuth(authData);
-        navigate(from, { replace: true });
-      }
-    } catch (err) {
-      handleError(err);
-    }
+    login(loginInfo);
   };
   return (
     <>
@@ -97,10 +67,16 @@ const Login = () => {
           </button>
         </form>
         <div className="login-links">
-          <Link to="/register" className="btn btn-link text-decoration-none">
+          <Link
+            to={`${ROUTE_PREFIX}/register`}
+            className="btn btn-link text-decoration-none"
+          >
             Register
           </Link>
-          <Link to="/reset" className="btn btn-link text-decoration-none">
+          <Link
+            to={`${ROUTE_PREFIX}/reset`}
+            className="btn btn-link text-decoration-none"
+          >
             Forgot Password
           </Link>
         </div>

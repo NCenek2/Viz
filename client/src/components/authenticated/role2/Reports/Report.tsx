@@ -1,19 +1,12 @@
 import { ChangeEvent, useEffect, useState } from "react";
 import useDashboard from "../../../../hooks/useDashboard";
-import useAxiosPrivate from "../../../../hooks/useAxiosPrivate";
 import { REPORTS } from "../../../../constants/constants";
 import { useAlert } from "../../../../hooks/useAlert";
-import useHandleError from "../../../../hooks/useHandleError";
+import useReportService, {
+  ReportType,
+} from "../../../../hooks/services/useReportService";
 
-type ReportType = {
-  report: string;
-  cycleId: number;
-  userId: number;
-  reportId?: number;
-  acknowledged: boolean;
-};
-
-const initialReport = {
+export const initialReport = {
   report: "",
   cycleId: 0,
   userId: 0,
@@ -21,40 +14,27 @@ const initialReport = {
 };
 
 const Report = () => {
-  const axiosPrivate = useAxiosPrivate();
-  const handleError = useHandleError();
-  const { setAlert, hideAlert } = useAlert();
+  const { setAlert } = useAlert();
   const { selectedCycle, selectedUser } = useDashboard();
   const [report, setReport] = useState<ReportType>({
     ...initialReport,
     cycleId: selectedCycle,
     userId: selectedUser,
   });
+  const { getReport, createReport, updateReport } = useReportService();
 
   const [madeChanges, setMadeChanges] = useState(false);
 
-  const getReport = async () => {
-    if (!selectedCycle || !selectedUser) return;
-
-    const result = await axiosPrivate.get(
-      `/reports?userId=${selectedUser}&cycleId=${selectedCycle}`
-    );
-
-    const reportData: ReportType[] = result.data;
-    if (reportData.length) {
-      return setReport((prevReport) => {
-        const newReport = {
-          ...prevReport,
-          ...result.data[0],
-        };
-        return newReport;
-      });
-    }
+  const handleGetReport = async () => {
+    const newReport: ReportType = await getReport(initialReport);
+    setReport((prevReport) => {
+      return { ...prevReport, ...newReport };
+    });
     setMadeChanges(false);
   };
 
   useEffect(() => {
-    getReport();
+    handleGetReport();
   }, []);
 
   const failedChecks = (): boolean => {
@@ -76,43 +56,15 @@ const Report = () => {
   const handleClick = async () => {
     if (failedChecks()) return;
 
-    async function createReport() {
-      try {
-        await axiosPrivate({
-          url: "/reports",
-          method: "post",
-          data: report,
-        });
-        getReport();
-        setAlert("Report Created", "success");
-      } catch (err) {
-        handleError(err);
-      }
-    }
+    const { reportId } = report;
 
-    async function updateReport() {
-      const { reportId } = report;
-      try {
-        await axiosPrivate({
-          url: `/reports/${reportId}`,
-          method: "patch",
-          data: { report: report.report },
-        });
-        getReport();
-        setAlert("Report Updated", "success");
-      } catch (err) {
-        handleError(err);
-      }
-    }
-
-    if (!report.reportId) {
-      createReport();
+    if (reportId === -1) {
+      createReport(report);
     } else {
-      updateReport();
+      updateReport(report);
     }
-
+    handleGetReport();
     setMadeChanges(false);
-    hideAlert();
   };
 
   const handleChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
@@ -124,12 +76,12 @@ const Report = () => {
     });
   };
 
-  const reportTitle = !report.reportId ? "New " : "";
+  const reportTitle = report.reportId === -1 ? "New " : "";
 
   const reportAcknowledged = report.acknowledged
     ? "✔ "
-    : report.acknowledged === false && report.reportId
-    ? "❌"
+    : report.acknowledged === false && report.reportId !== -1
+    ? "❌ "
     : "";
 
   if (!report.reportId) {
@@ -164,7 +116,7 @@ const Report = () => {
         disabled={!report.report.length || !madeChanges}
         onClick={handleClick}
       >
-        {!report.reportId ? "Create" : "Update"}
+        {report.reportId === -1 ? "Create" : "Update"}
       </button>
     </div>
   );
