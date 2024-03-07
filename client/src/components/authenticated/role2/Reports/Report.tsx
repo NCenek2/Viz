@@ -26,7 +26,7 @@ const Report = () => {
   const [madeChanges, setMadeChanges] = useState(false);
 
   const handleGetReport = async () => {
-    const newReport: ReportType = await getReport(initialReport);
+    const newReport: ReportType = await getReport();
     setReport((prevReport) => {
       return { ...prevReport, ...newReport };
     });

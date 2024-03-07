@@ -22,7 +22,7 @@ const useReportService = () => {
   const { selectedCycle, selectedUser } = useDashboard();
   const { auth } = useAuth();
 
-  async function getReport(report: ReportType): Promise<ReportType> {
+  async function getReport(): Promise<ReportType> {
     if (!selectedCycle || !selectedUser) return initialReport;
 
     try {

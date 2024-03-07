@@ -9,7 +9,7 @@ const SetCriteriaItem = ({ metricId, metricName }: MetricsType) => {
 
   const handleWeight = (e: ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
-    setWeight((p) => value);
+    setWeight((_) => value);
 
     let newWeight = parseFloat(value);
     if (!newWeight || newWeight <= 0) newWeight = 0;
@@ -22,7 +22,7 @@ const SetCriteriaItem = ({ metricId, metricName }: MetricsType) => {
 
   const handleThreshold = (e: ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
-    setThreshold((p) => value);
+    setThreshold((_) => value);
 
     let newThreshold = parseFloat(value);
     if (!newThreshold || newThreshold <= 0) newThreshold = 0;

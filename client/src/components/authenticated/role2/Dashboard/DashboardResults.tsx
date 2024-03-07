@@ -14,7 +14,7 @@ const Main = () => {
   } = useDashboardResults();
   const { updateDashboardUserMetrics } = useUserMetricService();
 
-  const { setAlert, hideAlert } = useAlert();
+  const { setAlert } = useAlert();
 
   if (!dashboardResults.length)
     return (

@@ -1,15 +1,7 @@
 import { ReactNode, createContext } from "react";
 import useRole1 from "../hooks/useRole1";
 
-type ChangeCycleState = {
-  current_cycle_date: string;
-};
-
-const initialChangeCycleContext: ChangeCycleState = {
-  current_cycle_date: "",
-};
-
-const useChangeCycleContext = (initChangeCycleState: ChangeCycleState) => {
+const useChangeCycleContext = () => {
   const { currentCycle } = useRole1();
   const current_date = currentCycle?.startDate;
   return { current_date };
@@ -31,9 +23,7 @@ type ChildrenType = {
 
 export const ChangeCycleProvider = ({ children }: ChildrenType) => {
   return (
-    <ChangeCycleContext.Provider
-      value={useChangeCycleContext(initialChangeCycleContext)}
-    >
+    <ChangeCycleContext.Provider value={useChangeCycleContext()}>
       {children}
     </ChangeCycleContext.Provider>
   );

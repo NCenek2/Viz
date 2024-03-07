@@ -20,7 +20,7 @@ const DashboardResultsItem = ({
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setMadeChanges(true);
     const { value } = e.target;
-    setCurrentValue((prev) => value);
+    setCurrentValue((_) => value);
 
     if (userMetricId !== -1 && !updatedSet.has(userMetricId)) {
       setUpdatedSet((prevUpdatedSet) => {

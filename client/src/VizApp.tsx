@@ -13,13 +13,13 @@ import Access from "./components/authenticated/role2/Access/Access";
 import CreateCycleWrapper from "./components/authenticated/role2/CreateCycle/CreateCycleWrapper";
 import ChangeCycleWrapper from "./components/authenticated/role2/ChangeCycle/ChangeCycleWrapper";
 import DashboardWrapper from "./components/authenticated/role2/Dashboard/DashboardWrapper";
-import MetricsWrapper from "./components/authenticated/role2/Metrics/MetricsWrapper";
 import Rankings from "./components/authenticated/role1/Rankings";
 import AppDataWrapper from "./components/authenticated/AppDataWrapper";
 import Role2Wrapper from "./components/authenticated/role2/Role2Wrapper";
 import ReportsWrapper from "./components/authenticated/role2/Reports/ReportsWrapper";
 import UserReportsWrapper from "./components/authenticated/role2/UserReports/UserWrapper";
 import ResetPassword from "./components/ResetPassword";
+import Metrics from "./components/authenticated/role2/Metrics/Metrics";
 
 function VizApp() {
   return (
@@ -48,7 +48,7 @@ function VizApp() {
                     element={<ChangeCycleWrapper />}
                   />
                   <Route path="/r2/reports" element={<ReportsWrapper />} />
-                  <Route path="/r2/metrics" element={<MetricsWrapper />} />
+                  <Route path="/r2/metrics" element={<Metrics />} />
                 </Route>
               </Route>
             </Route>

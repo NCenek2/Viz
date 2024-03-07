@@ -26,9 +26,9 @@ const Reports = () => {
   }
 
   function reset(): boolean {
-    setSelectedCycle((p) => 0);
-    setSelectedUser((p) => 0);
-    setFilteredCycles((p) => []);
+    setSelectedCycle((_) => 0);
+    setSelectedUser((_) => 0);
+    setFilteredCycles((_) => []);
     return true;
   }
 
@@ -52,9 +52,10 @@ const Reports = () => {
     const didReset = checkFilters(selectedUser, newCycle);
     if (didReset) return;
 
-    setSelectedCycle((p) => newCycle);
+    setSelectedCycle((_) => newCycle);
 
     if (newCycle === 0) return updateCycles(selectedUser);
+    return;
   };
 
   const handleUser = (e: ChangeEvent<HTMLSelectElement>) => {
@@ -65,7 +66,7 @@ const Reports = () => {
     const didReset = checkFilters(newUser, selectedCycle);
     if (didReset) return;
 
-    setSelectedUser((p) => newUser);
+    setSelectedUser((_) => newUser);
     updateCycles(newUser);
   };
 

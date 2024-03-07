@@ -25,7 +25,7 @@ const Dashboard = () => {
   async function updateUsers(cycleId: number) {
     const cycleUsersData = await getCycleUsers(cycleId);
     if (!cycleUsersData.length) return reset();
-    setFilteredUsers(cycleUsersData);
+    return setFilteredUsers(cycleUsersData);
   }
 
   async function updateCycles(userId: number) {
@@ -35,10 +35,10 @@ const Dashboard = () => {
   }
 
   function reset(): boolean {
-    setSelectedCycle((p) => 0);
-    setSelectedUser((p) => 0);
-    setFilteredUsers((p) => []);
-    setFilteredCycles((p) => []);
+    setSelectedCycle((_) => 0);
+    setSelectedUser((_) => 0);
+    setFilteredUsers((_) => []);
+    setFilteredCycles((_) => []);
     return true;
   }
 
@@ -64,11 +64,11 @@ const Dashboard = () => {
     const didReset = checkFilters(newUser, selectedCycle);
     if (didReset) return;
 
-    setSelectedUser((p) => newUser);
+    setSelectedUser((_) => newUser);
 
     if (newUser === 0) return updateUsers(selectedCycle);
 
-    updateCycles(newUser);
+    return updateCycles(newUser);
   };
 
   const handleCycle = (e: ChangeEvent<HTMLSelectElement>) => {
@@ -79,10 +79,10 @@ const Dashboard = () => {
     const didReset = checkFilters(selectedUser, newCycle);
     if (didReset) return;
 
-    setSelectedCycle((p) => newCycle);
+    setSelectedCycle((_) => newCycle);
 
     if (newCycle === 0) return updateCycles(selectedUser);
-    updateUsers(newCycle);
+    return updateUsers(newCycle);
   };
 
   return (
