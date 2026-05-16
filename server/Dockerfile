@@ -1,12 +1,15 @@
+# Stage 0: Setup Environment Variables
+ARG NODE_VERSION=25-alpine
+
 # Stage 1: Build
-FROM node:20-alpine AS build
+FROM node:${NODE_VERSION} AS build
 WORKDIR /src
 COPY package*.json ./
 RUN npm ci
 COPY . .
 RUN npm run build
 # Stage 2: Production
-FROM node:20-alpine
+FROM node:${NODE_VERSION}
 WORKDIR /app
 COPY --from=build /src/dist ./dist
 COPY --from=build /src/node_modules ./node_modules
