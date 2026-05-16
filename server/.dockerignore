@@ -1,0 +1,11 @@
+.git
+dist
+node_modules
+test
+.gitignore
+.eslintrc.js
+.prettierrc
+nest-cli.json
+Dockerfile
+docker-compose.yml
+README.md

@@ -1,0 +1,34 @@
+services:
+  nestjs:
+    build: ./
+    container_name: nestjs
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_USER: postgres
+      DB_PASSWORD: B3nnywashere
+      DB_NAME: verizon_app
+    ports:
+      - "3000:3000"
+    depends_on:
+      - postgres
+    networks:
+      - nest-network
+
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: verizon_app
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: B3nnywashere
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - nest-network
+
+volumes:
+  postgres_data:
+
+networks:
+  nest-network:
+    driver: bridge
