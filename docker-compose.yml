@@ -1,7 +1,16 @@
 services:
+  react:
+    build: ./client
+    container_name: react
+    ports:
+      - "3000:8080"
+    depends_on:
+      - nestjs
+    networks:
+      - nest-network
+
   nestjs:
-    build: ./
-    container_name: nestjs
+    build: ./server
     environment:
       DB_HOST: postgres
       DB_PORT: 5432
@@ -9,7 +18,7 @@ services:
       DB_PASSWORD: B3nnywashere
       DB_NAME: verizon_app
     ports:
-      - '5000:5000'
+      - "5000:5000"
     depends_on:
       - postgres
     networks:
@@ -22,12 +31,12 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: B3nnywashere
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - viz_postgres_data:/var/lib/postgresql/data
     networks:
       - nest-network
 
 volumes:
-  postgres_data:
+  viz_postgres_data:
 
 networks:
   nest-network:
