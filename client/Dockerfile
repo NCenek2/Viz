@@ -3,7 +3,9 @@ ARG NGINX_VERSION=alpine3.22
 
 # Stage 1: Build
 FROM node:${NODE_VERSION} AS builder
-ENV REACT_APP_BACKEND_URL=http://localhost:5000
+# For docker-compose.yml use http://localhost:5000
+# For minikube cluster use http://backend-service:5000 
+ENV REACT_APP_BACKEND_URL=http://backend-service:5000
 
 WORKDIR /src
 
