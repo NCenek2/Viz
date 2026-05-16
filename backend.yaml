@@ -1,0 +1,75 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-deployment
+  labels:
+    app: backend
+spec:
+  # For Database generally should be in statefulset
+  replicas: 1
+  # selector used to identify which pods belongs to deployment
+  selector:
+    matchLabels:
+      app: backend
+  # Definition of Pod
+  template:
+    metadata:
+      # labels are key value pairs
+      # pods will have different names, but will share label
+      # common for apps to be app:appNae
+      labels:
+        app: backend
+    spec:
+      containers:
+        - name: backend
+          image: viz-server:latest
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 5000
+          env:
+            # value: would be if you just hard code
+            - name: DB_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: postgres-config
+                  key: postgres-host
+            - name: DB_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: postgres-config
+                  key: postgres-port
+
+            - name: DB_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  # name is secret file name
+                  # key is key from that secret file
+                  name: postgres-secret
+                  key: postgres-user
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key: postgres-password
+            - name: DB_DATABASE
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key: postgres-db-name
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend-service
+spec:
+  # selector needed to forward request to endpoint pods
+  # should match label for pod
+  selector:
+    app: backend
+  ports:
+    - protocol: TCP
+      # service port
+      # common convention to use same ports
+      port: 5000
+      # port of the pods
+      targetPort: 5000
