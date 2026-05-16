@@ -22,12 +22,9 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: B3nnywashere
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - /var/lib/postgresql/data
     networks:
       - nest-network
-
-volumes:
-  postgres_data:
 
 networks:
   nest-network:
