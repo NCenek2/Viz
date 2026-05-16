@@ -1,10 +1,9 @@
-# Stage 0: Environment Variables
 ARG NODE_VERSION=20-alpine
 ARG NGINX_VERSION=alpine3.22
 
 # Stage 1: Build
-
 FROM node:${NODE_VERSION} AS builder
+ENV REACT_APP_BACKEND_URL=http://localhost:5000
 
 WORKDIR /src
 
