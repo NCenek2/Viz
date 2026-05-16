@@ -43,7 +43,7 @@ const useUserMetricService = () => {
   async function getCycleUsers(cycleId: number): Promise<FilteredUser[]> {
     try {
       const cycleUsersResponse = await axiosPrivate.get(
-        `/user_metrics/cycle_users/${cycleId}`
+        `/user_metrics/cycle_users/${cycleId}`,
       );
       let cycleUsersData: FilteredUser[] = cycleUsersResponse.data;
       cycleUsersData.sort((userA, userB) => userA.userId - userB.userId);
@@ -62,7 +62,7 @@ const useUserMetricService = () => {
     if (!userId) return [];
     try {
       const userCyclesDataResponse = await axiosPrivate.get(
-        `/user_metrics/user_cycles/${userId}`
+        `/user_metrics/user_cycles/${userId}`,
       );
 
       let userCyclesData: CycleType[] = userCyclesDataResponse.data;
@@ -94,7 +94,7 @@ const useUserMetricService = () => {
 
   async function getCycleUserMetrics(
     userId: number,
-    cycleId: number
+    cycleId: number,
   ): Promise<DashboardResultsType[]> {
     try {
       if (cycleId === 0) {
@@ -104,12 +104,12 @@ const useUserMetricService = () => {
       }
 
       const userCycleMetricsResponse = await axiosPrivate(
-        `/user_metrics?userId=${userId}&cycleId=${cycleId}`
+        `/user_metrics?userId=${userId}&cycleId=${cycleId}`,
       );
       let userCycleMetricsData: DashboardResultsType[] =
         userCycleMetricsResponse.data;
       userCycleMetricsData.sort(
-        (metricA, metricsB) => metricA.metricId - metricsB.metricId
+        (metricA, metricsB) => metricA.metricId - metricsB.metricId,
       );
 
       if (!userCycleMetricsData.length) {
@@ -130,13 +130,13 @@ const useUserMetricService = () => {
 
     if (!currentCycleId) {
       const currentCycle: CurrentCycleType = await getCurrentCycle();
-      if (currentCycle.cycleId === 0) return [];
+      if (currentCycle.cycleId === 0 || !currentCycle) return [];
       currentCycleId = currentCycle.cycleId;
     }
 
     try {
       const response = await axiosPrivate.get(
-        `/user_metrics/rankings/${currentCycleId}`
+        `/user_metrics/rankings/${currentCycleId}`,
       );
 
       const rankingData: RankingData[] = response.data;
@@ -156,7 +156,7 @@ const useUserMetricService = () => {
       }
 
       const sortedRanks = Object.values(rankingObj).sort(
-        (rankingA, rankingB) => rankingB.score - rankingA.score
+        (rankingA, rankingB) => rankingB.score - rankingA.score,
       );
 
       return sortedRanks;
@@ -168,7 +168,7 @@ const useUserMetricService = () => {
 
   async function createUserCycleMetrics(
     criteriaData: MetricsCriterionId[],
-    newCycleData: CycleType
+    newCycleData: CycleType,
   ) {
     const { metrics, users } = state;
     const { cycleId } = newCycleData;
